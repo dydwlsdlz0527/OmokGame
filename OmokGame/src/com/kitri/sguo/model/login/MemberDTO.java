@@ -9,6 +9,9 @@ public class MemberDTO {
 	private String user_intro;
 	private byte[] user_image;
 	private int total_score;
+	private String salt;
+	
+	
 	
 	public String getUser_id() {
 		return user_id;
@@ -66,8 +69,16 @@ public class MemberDTO {
 		this.total_score = total_score;
 	}
 	
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+
 	public MemberDTO(String user_id, String user_password, String user_info_que, String que_ans, String user_intro,
-			byte[] user_image, int total_score) {
+			byte[] user_image, int total_score, String salt) {
 		super();
 		this.user_id = user_id;
 		this.user_password = user_password;
@@ -76,15 +87,17 @@ public class MemberDTO {
 		this.user_intro = user_intro;
 		this.user_image = user_image;
 		this.total_score = total_score;
+		this.salt = salt;
 	}
 	
-	public MemberDTO(String user_id, String user_password, String user_info_que, String que_ans, String user_intro) {
+	public MemberDTO(String user_id, String user_password, String user_info_que, String que_ans, String user_intro, String salt) {
 		super();
 		this.user_id = user_id;
 		this.user_password = user_password;
 		this.user_info_que = user_info_que;
 		this.que_ans = que_ans;
 		this.user_intro = user_intro;
+		this.salt = salt;
 	}
 
 	@Override

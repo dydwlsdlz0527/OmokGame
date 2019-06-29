@@ -43,7 +43,7 @@ public class JoinController implements ActionListener{
 			jci.idcheck(idtxt);
 		}else if(cmd.equals("∞°¿‘")) {
 			if(passwordtxt.getText().equals(passwordchktxt.getText())) {
-				MemberDTO mdto = new MemberDTO(idtxt.getText(),passwordtxt.getText(),comboString.getSelectedItem().toString(), anstxtfield.getText(), textArea.getText());
+				MemberDTO mdto = new MemberDTO(idtxt.getText(),passwordtxt.getText(),comboString.getSelectedItem().toString(), anstxtfield.getText(), textArea.getText(), "");
 				jci.userjoin(mdto);
 				joinview.setVisible(false);
 			}else {

@@ -18,6 +18,7 @@ public class LoginCommandImpl implements LoginCommand {
 		this.loginview = loginview;
 	}
 	
+	
 	@Override
 	public void join() {
 		JoinView jv = new JoinView();
