@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -19,7 +21,7 @@ public class MemberDAO {
 	Connection conn;
 	
 	public void Connect() {
-		DB_URL = "jdbc:oracle:thin:@localhost:1521:orcl";
+		DB_URL = "jdbc:oracle:thin:@localhost:1521:xe";
 		DB_USER = "c##sguo";
 		DB_PASSWORD = "1234";
 		conn = null;
@@ -154,6 +156,31 @@ public class MemberDAO {
 			}
 		}
 		return salt;
+	}
+	
+	public List<Object> getUserInfo(String memberid){
+		List<Object> list = new ArrayList<>();
+		Connect();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String query = "SELECT R.USER_ID, R.VICTORY, R.DRAW, R.DEFEAT, O.USER_IMAGE\r\n" + 
+				"FROM OMOK_USER O, USER_RECODE R\r\n" + 
+				"WHERE O.USER_ID = R.USER_ID AND O.USER_ID = ?";
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, memberid);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				list.add(rs.getString(1));
+				list.add(rs.getInt(2));
+				list.add(rs.getInt(3));
+				list.add(rs.getInt(4));
+				list.add(rs.getBlob(5));
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 
 }
