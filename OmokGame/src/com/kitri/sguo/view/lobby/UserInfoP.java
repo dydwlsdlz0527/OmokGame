@@ -16,10 +16,6 @@ public class UserInfoP extends JPanel{
 		setLayout(null);
 		setBounds(0, 0, 342, 277);
 		
-		JPanel panel = new JPanel();
-		panel.setBounds(12, 10, 164, 257);
-		add(panel);
-		
 		JLabel userid = new JLabel(" \uC544\uC774\uB514 : ");
 		userid.setFont(new Font("±¼¸²", Font.BOLD, 14));
 		userid.setBounds(180, 31, 69, 27);
@@ -76,8 +72,12 @@ public class UserInfoP extends JPanel{
 		ulist.get(2);
 		ulist.get(3);
 		double total = (int)ulist.get(1)+(int)ulist.get(2)+(int)ulist.get(3);
-		double nshift = (int)ulist.get(1)/total * 100;
-		
+		double nshift = 0;
+		if(total==0) {
+			nshift = 0;
+		}else {
+			nshift = (int)ulist.get(1)/total * 100;
+		}
 		JLabel shift = new JLabel(String.valueOf(nshift));
 		shift.setFont(new Font("±¼¸²", Font.BOLD, 14));
 		shift.setBounds(222, 175, 72, 27);
@@ -88,6 +88,11 @@ public class UserInfoP extends JPanel{
 		shift2.setBounds(265, 175, 72, 27);
 		add(shift2);
 		
+		JPanel imagepanel = new JPanel();
+		imagepanel.setBounds(12, 10, 164, 257);
+		add(imagepanel);
+		
+		
 		JButton userModified = new JButton("\uC218\uC815");
 		userModified.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		userModified.setBounds(185, 227, 72, 34);
@@ -97,6 +102,8 @@ public class UserInfoP extends JPanel{
 		secession.setFont(new Font("±¼¸²", Font.BOLD, 12));
 		secession.setBounds(265, 227, 69, 34);
 		add(secession);
+		
+		
 		
 	}
 }

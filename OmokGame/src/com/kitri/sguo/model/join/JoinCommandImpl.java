@@ -1,18 +1,19 @@
 package com.kitri.sguo.model.join;
 
+
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
 import com.kitri.sguo.model.login.MemberDAO;
 import com.kitri.sguo.model.login.MemberDTO;
+import com.kitri.sguo.view.login.ImageP;
 
 public class JoinCommandImpl implements JoinCommand{
 	
 	MemberDAO mdao = new MemberDAO();
 
 	@Override
-	public void userjoin(MemberDTO mdto) {
-		if(mdao.userjoin(mdto)>0) {
+	public void userjoin(MemberDTO mdto, String filepath) {
+		if(mdao.userjoin(mdto, filepath)>0) {
 			JOptionPane.showMessageDialog(null,"가입을 축하합니다.");
 		}else {
 			JOptionPane.showMessageDialog(null,"작성 내용을 다시 확인해주세요.");
@@ -32,6 +33,11 @@ public class JoinCommandImpl implements JoinCommand{
 		}else {
 			JOptionPane.showMessageDialog(null,"가능한 아이디입니다.");
 		}
+	}
+
+	@Override
+	public void paintimage(String imagepath, ImageP imagep) {
+		imagep.setImage(imagepath);
 	}
 
 }

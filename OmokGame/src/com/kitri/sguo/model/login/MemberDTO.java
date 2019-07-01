@@ -1,5 +1,7 @@
 package com.kitri.sguo.model.login;
 
+import java.sql.Blob;
+
 public class MemberDTO {
 	
 	private String user_id;
