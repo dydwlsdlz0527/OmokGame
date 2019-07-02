@@ -15,9 +15,9 @@ public class LoginView extends JFrame {
 	private JTextField idtxtField;
 	private JPasswordField passwordField;
 	private JButton loginbtn;
-	private JButton findidbtn;
-	private JButton findpwbtn;
+	private JButton findidpwbtn;
 	private JButton joinbtn;
+	private JButton exitbtn;
 	
 
 	public LoginView() {
@@ -48,14 +48,9 @@ public class LoginView extends JFrame {
 		loginbtn.setBounds(550, 415, 97, 44);
 		getContentPane().add(loginbtn);
 
-		findidbtn = new JButton("아이디찾기");
-			
-		findidbtn.setBounds(356, 462, 90, 23);
-		getContentPane().add(findidbtn);
-
-		findpwbtn = new JButton("비밀번호찾기");
-		findpwbtn.setBounds(455, 462, 90, 23);
-		getContentPane().add(findpwbtn);
+		findidpwbtn = new JButton("\uC544\uC774\uB514/\uBE44\uBC00\uBC88\uD638 \uCC3E\uAE30");
+		findidpwbtn.setBounds(356, 462, 189, 23);
+		getContentPane().add(findidpwbtn);
 
 		joinbtn = new JButton("회원가입");
 
@@ -70,7 +65,7 @@ public class LoginView extends JFrame {
 		passwordField.setBounds(356, 438, 189, 22);
 		getContentPane().add(passwordField);
 		
-		JButton exitbtn = new JButton("나가기");
+		exitbtn = new JButton("나가기");
 		exitbtn.setBounds(550, 464, 97, 46);
 		getContentPane().add(exitbtn);
 		
@@ -89,7 +84,9 @@ public class LoginView extends JFrame {
 					//회원가입 버튼 클릭
 					lv.joinbtn.addActionListener(lcontroller);
 					//비밀번호 찾기 버튼 클릭
-					lv.findpwbtn.addActionListener(lcontroller);
+					lv.findidpwbtn.addActionListener(lcontroller);
+					//나가기 버튼 클릭
+					lv.exitbtn.addActionListener(lcontroller);
 				}catch(Exception e) {
 					e.printStackTrace();
 				}

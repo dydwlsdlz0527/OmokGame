@@ -10,6 +10,10 @@ import javax.swing.JPanel;
 
 public class UserInfoP extends JPanel{
 	
+	JButton secession;
+	JButton userModified;
+	JLabel getUserId;
+	BufferedImage bi;
 
 	public UserInfoP(List<Object> ulist) {
 		//회원 정보 갖고 오기
@@ -22,7 +26,7 @@ public class UserInfoP extends JPanel{
 		userid.setBounds(180, 31, 69, 27);
 		add(userid);
 		
-		JLabel getUserId = new JLabel(ulist.get(0)+"");
+		getUserId = new JLabel(ulist.get(0)+"");
 		getUserId.setFont(new Font("굴림", Font.BOLD, 14));
 		getUserId.setBounds(252, 31, 69, 27);
 		add(getUserId);
@@ -88,23 +92,20 @@ public class UserInfoP extends JPanel{
 		shift2.setBounds(265, 175, 72, 27);
 		add(shift2);
 		
-		//로비 이미지
-		BufferedImage bi = (BufferedImage) ulist.get(4);
+		bi = (BufferedImage) ulist.get(4);
 		JPanel imagepanel = new LobbyUserImageP(bi);
 		imagepanel.setBounds(12, 10, 164, 257);
 		add(imagepanel);
 		
-		JButton userModified = new JButton("\uC218\uC815");
+		userModified = new JButton("\uC218\uC815");
 		userModified.setFont(new Font("굴림", Font.BOLD, 12));
 		userModified.setBounds(185, 227, 72, 34);
 		add(userModified);
 		
-		JButton secession = new JButton("\uD0C8\uD1F4");
+		secession = new JButton("\uD0C8\uD1F4");
 		secession.setFont(new Font("굴림", Font.BOLD, 12));
 		secession.setBounds(265, 227, 69, 34);
 		add(secession);
-		
-		
-		
+			
 	}
 }

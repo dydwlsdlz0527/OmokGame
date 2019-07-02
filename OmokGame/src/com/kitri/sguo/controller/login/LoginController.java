@@ -36,16 +36,14 @@ public class LoginController implements ActionListener{
 		LoginCommandImpl lci = new LoginCommandImpl(loginview);
 		String cmd = e.getActionCommand();
 		if(cmd.equals("로그인")) {
-			System.out.println("로그인 창");
 			lci.login(idtxtFiled,passwordField);
 		}else if(cmd.equals("회원가입")) {
 			lci.join();
 		}else if(cmd.equals("나가기")){
-			System.out.println("종료");
-		}else if(cmd.equals("비밀번호찾기")) {
-			lci.findpassword();
+			lci.exit();
+		}else if(cmd.equals("아이디/비밀번호 찾기")) {
+			lci.findidpassword(loginview);
 		}
-		
 		
 	}
 

@@ -1,16 +1,15 @@
 package com.kitri.sguo.model.login;
 
-import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import com.kitri.sguo.constdata.SguoConst;
-import com.kitri.sguo.view.lobby.MainLobby;
-import com.kitri.sguo.view.login.FindPassword;
+import com.kitri.sguo.controller.login.LoginController;
+import com.kitri.sguo.view.lobby.MainLobbyView;
+import com.kitri.sguo.view.login.DialogPhoneNum;
+import com.kitri.sguo.view.login.FindPasswordView;
 import com.kitri.sguo.view.login.JoinView;
 import com.kitri.sguo.view.login.LoginView;
 
@@ -27,17 +26,12 @@ public class LoginCommandImpl implements LoginCommand {
 	@Override
 	public void join() {
 		JoinView jv = new JoinView();
-		jv.joinControllerMake(jv);
+		jv.MakeJoinController();
 	}
 	
 	@Override
-	public void findpassword() {
-		FindPassword fp = new FindPassword();
-	}
-
-	@Override
-	public void findid() {
-		
+	public void findidpassword(LoginView loginview) {
+		new DialogPhoneNum(loginview);
 	}
 
 	@Override
@@ -45,7 +39,8 @@ public class LoginCommandImpl implements LoginCommand {
 		if(mdao.login(user_id,user_password)) {
 			JOptionPane.showMessageDialog(null,"로그인 성공");
 			loginview.setVisible(false);
-			MainLobby ml = new MainLobby(user_id.getText());
+			MainLobbyView ml = new MainLobbyView(user_id.getText());
+			ml.MakeLobbyController();
 			ml.setVisible(true);
 //			try {
 //				userSocket = new Socket("localhost",SguoConst.UPORT);
@@ -57,6 +52,11 @@ public class LoginCommandImpl implements LoginCommand {
 		}else {
 			JOptionPane.showMessageDialog(null,"로그인 실패");
 		}
+	}
+	//프로그램 종료
+	@Override
+	public void exit() {
+		System.exit(0);
 	}
 
 }

@@ -4,6 +4,7 @@ import javax.swing.JTextField;
 
 import com.kitri.sguo.model.login.MemberDTO;
 import com.kitri.sguo.view.login.ImageP;
+import com.kitri.sguo.view.login.JoinView;
 
 public interface JoinCommand {
 	
@@ -11,7 +12,7 @@ public interface JoinCommand {
 	public abstract void userjoin(MemberDTO mdto, String filepath);
 	
 	//가입 취소
-	public abstract void joincancel();
+	public abstract void exit(JoinView joinview);
 	
 	//아이디 중복 확인
 	public abstract void idcheck(JTextField idtxt);

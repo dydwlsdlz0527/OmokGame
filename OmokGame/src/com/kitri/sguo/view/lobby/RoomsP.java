@@ -1,6 +1,6 @@
 package com.kitri.sguo.view.lobby;
 
-//∑©≈© ∫‰
-public class RankView {
+//∞‘¿”πÊ ∏∏µÈ±‚
+public class RoomsP {
 
 }

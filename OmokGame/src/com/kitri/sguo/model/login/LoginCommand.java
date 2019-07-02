@@ -9,11 +9,11 @@ public interface LoginCommand {
 	
 	//회원가입
 	public abstract void join();
-	//비밀번호찾기
-	public abstract void findpassword();
-	//아이디찾기
-	public abstract void findid();
+	//아이디,비밀번호찾기
+	public abstract void findidpassword(LoginView loginview);
 	//로그인
 	public abstract void login(JTextField user_id, JPasswordField user_password);
+	//나가기
+	public abstract void exit();
 	
 }

@@ -6,6 +6,7 @@ public class MemberDTO {
 	
 	private String user_id;
 	private String user_password;
+	private String user_phonenum;
 	private String user_info_que;
 	private String que_ans;
 	private String user_intro;
@@ -29,6 +30,14 @@ public class MemberDTO {
 	
 	public void setUser_password(String user_password) {
 		this.user_password = user_password;
+	}
+	
+	public String getUser_phonenum() {
+		return user_phonenum;
+	}
+
+	public void setUser_phonenum(String user_phonenum) {
+		this.user_phonenum = user_phonenum;
 	}
 	
 	public String getUser_info_que() {
@@ -79,11 +88,12 @@ public class MemberDTO {
 		this.salt = salt;
 	}
 
-	public MemberDTO(String user_id, String user_password, String user_info_que, String que_ans, String user_intro,
+	public MemberDTO(String user_id, String user_password, String user_phonenum, String user_info_que, String que_ans, String user_intro,
 			byte[] user_image, int total_score, String salt) {
 		super();
 		this.user_id = user_id;
 		this.user_password = user_password;
+		this.user_phonenum = user_phonenum;
 		this.user_info_que = user_info_que;
 		this.que_ans = que_ans;
 		this.user_intro = user_intro;
@@ -92,10 +102,11 @@ public class MemberDTO {
 		this.salt = salt;
 	}
 	
-	public MemberDTO(String user_id, String user_password, String user_info_que, String que_ans, String user_intro, String salt) {
+	public MemberDTO(String user_id, String user_password, String user_phonenum,String user_info_que, String que_ans, String user_intro, String salt) {
 		super();
 		this.user_id = user_id;
 		this.user_password = user_password;
+		this.user_phonenum = user_phonenum;
 		this.user_info_que = user_info_que;
 		this.que_ans = que_ans;
 		this.user_intro = user_intro;

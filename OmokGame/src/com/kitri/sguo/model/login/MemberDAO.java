@@ -15,10 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import com.kitri.sguo.security.SHA256Util;
+import com.kitri.sguo.view.login.DialogPhoneNum;
+import com.kitri.sguo.view.login.JoinView;
 
 public class MemberDAO {
 
@@ -91,7 +94,6 @@ public class MemberDAO {
 			pstmt.setString(1, user_id.getText());
 			rs = pstmt.executeQuery();
 			result = rs.next();
-			System.out.println(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -125,28 +127,29 @@ public class MemberDAO {
 			e1.printStackTrace();
 		}
 
-		String query = "INSERT INTO OMOK_USER (USER_ID,USER_PASSWORD,USER_INFO_QUE,QUE_HINT,USER_INTRO, USER_IMAGE,SALT)\r\n"
-				+ "VALUES (?,?,?,?,?,?,?)";
+		String query = "INSERT INTO OMOK_USER (USER_ID,USER_PASSWORD,USER_PHONENUM,USER_INFO_QUE,QUE_HINT,USER_INTRO, USER_IMAGE,SALT)\r\n"
+				+ "VALUES (?,?,?,?,?,?,?,?)";
 		String query2 = "INSERT INTO USER_RECODE(USER_ID) VALUES (?)";
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, mdto.getUser_id().trim());
 			pstmt.setString(2, password);
-			pstmt.setString(3, mdto.getUser_info_que().trim());
-			pstmt.setString(4, mdto.getQue_ans().trim());
-			pstmt.setString(5, mdto.getUser_intro().trim());
+			pstmt.setString(3,mdto.getUser_phonenum().trim());
+			pstmt.setString(4, mdto.getUser_info_que().trim());
+			pstmt.setString(5, mdto.getQue_ans().trim());
+			pstmt.setString(6, mdto.getUser_intro().trim());
 			try {
-				pstmt.setBinaryStream(6, fin, fin.available());
+				pstmt.setBinaryStream(7, fin, fin.available());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			pstmt.setString(7, salt);
+			pstmt.setString(8, salt);
 			result = pstmt.executeUpdate();
 			pstmt = conn.prepareStatement(query2);
 			pstmt.setString(1, mdto.getUser_id().trim());
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			new JoinView();
 		} finally {
 			try {
 				pstmt.close();
@@ -217,6 +220,94 @@ public class MemberDAO {
 			e.printStackTrace();
 		}
 		return list;
+	}
+	
+	public List<Object> FindQue(String userphonenum){
+		List<Object> list = new ArrayList<>();
+		Connect();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String query = "SELECT  USER_ID, USER_INFO_QUE, QUE_HINT\r\n" + 
+				"FROM OMOK_USER\r\n" + 
+				"WHERE USER_PHONENUM = ?";
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, userphonenum.trim());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				list.add(rs.getString(1));
+				list.add(rs.getString(2));
+				list.add(rs.getString(3));
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null,"핸드폰 번호가 틀렸습니다.");
+		}finally {
+			try {
+				rs.close();
+				pstmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
+
+	public void ModifyPW(String idstr, String pwstr) {
+		String salt = SHA256Util.generateSalt();
+		String password =  SHA256Util.getEncrypt(pwstr, salt);
+		Connect();
+		PreparedStatement pstmt = null;
+		String query = "UPDATE OMOK_USER SET USER_PASSWORD=?, SALT=? WHERE USER_ID = ?";
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, password);
+			pstmt.setString(2, salt);
+			pstmt.setString(3, idstr);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}finally {
+			try {
+				pstmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+		}
+	}
+
+	public void deleteUser(String userid) {
+		Connect();
+		PreparedStatement pstmt = null;
+		System.out.println(userid);
+		String query = "DELETE OMOK_USER WHERE USER_ID = ?";
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, userid.trim());
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				pstmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public MemberDTO getUserModify(String userid) {
+		
+		return null;
 	}
 
 }
