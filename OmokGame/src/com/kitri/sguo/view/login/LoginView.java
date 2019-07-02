@@ -1,5 +1,13 @@
 package com.kitri.sguo.view.login;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,9 +26,13 @@ public class LoginView extends JFrame {
 	private JButton findidpwbtn;
 	private JButton joinbtn;
 	private JButton exitbtn;
+	private JPanel mainimgpanel;
+	private Image img;
+	private BufferedImage bi;
 	
 
 	public LoginView() {
+		getContentPane().setBackground(Color.ORANGE);
 		//게임화면 설정
 		setVisible(true);
 		setSize(1000,1000/4*3);
@@ -57,9 +69,27 @@ public class LoginView extends JFrame {
 		joinbtn.setBounds(356, 487, 189, 23);
 		getContentPane().add(joinbtn);
 		
-		JPanel mainimgpanel = new JPanel();
-		mainimgpanel.setBounds(353, 213, 298, 195);
+		//메인 이미지 읽어오기
+		try {
+			bi = ImageIO.read(new File("image/mainimage.jpg"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Image img = bi.getScaledInstance(bi.getWidth(),bi.getHeight(), Image.SCALE_SMOOTH);
+		mainimgpanel = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				g.drawImage(img,0,0,null);
+				g.dispose();
+				setOpaque(false);
+			}
+		};
+		mainimgpanel.setBounds(182, 112, 600, 280);
+		//mainimgpanel.setVisible(true);
 		getContentPane().add(mainimgpanel);
+		mainimgpanel.setVisible(true);
 		
 		passwordField = new JPasswordField();
 		passwordField.setBounds(356, 438, 189, 22);
