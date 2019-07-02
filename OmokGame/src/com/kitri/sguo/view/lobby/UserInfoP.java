@@ -1,6 +1,7 @@
 package com.kitri.sguo.view.lobby;
 
 import java.awt.Font;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -31,7 +32,6 @@ public class UserInfoP extends JPanel{
 		logs.setBounds(188, 68, 69, 27);
 		add(logs);
 		
-		System.out.println(ulist.get(1));
 		JLabel getWin = new JLabel(ulist.get(1)+"");
 		getWin.setFont(new Font("±º∏≤", Font.BOLD, 14));
 		getWin.setBounds(188, 105, 30, 27);
@@ -41,7 +41,7 @@ public class UserInfoP extends JPanel{
 		winl.setFont(new Font("±º∏≤", Font.BOLD, 14));
 		winl.setBounds(217, 105, 30, 27);
 		add(winl);
-		System.out.println(ulist.get(2)+"");
+
 		JLabel getDraw = new JLabel(ulist.get(2)+"");
 		getDraw.setFont(new Font("±º∏≤", Font.BOLD, 14));
 		getDraw.setBounds(235, 105, 30, 27);
@@ -51,7 +51,7 @@ public class UserInfoP extends JPanel{
 		drawl.setFont(new Font("±º∏≤", Font.BOLD, 14));
 		drawl.setBounds(263, 105, 30, 27);
 		add(drawl);
-		System.out.println(ulist.get(3)+"");
+		
 		JLabel getLose = new JLabel(ulist.get(3)+"");
 		getLose.setFont(new Font("±º∏≤", Font.BOLD, 14));
 		getLose.setBounds(283, 105, 30, 27);
@@ -88,10 +88,11 @@ public class UserInfoP extends JPanel{
 		shift2.setBounds(265, 175, 72, 27);
 		add(shift2);
 		
-		JPanel imagepanel = new JPanel();
+		//∑Œ∫Ò ¿ÃπÃ¡ˆ
+		BufferedImage bi = (BufferedImage) ulist.get(4);
+		JPanel imagepanel = new LobbyUserImageP(bi);
 		imagepanel.setBounds(12, 10, 164, 257);
 		add(imagepanel);
-		
 		
 		JButton userModified = new JButton("\uC218\uC815");
 		userModified.setFont(new Font("±º∏≤", Font.BOLD, 12));

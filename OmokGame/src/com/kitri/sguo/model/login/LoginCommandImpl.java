@@ -47,13 +47,13 @@ public class LoginCommandImpl implements LoginCommand {
 			loginview.setVisible(false);
 			MainLobby ml = new MainLobby(user_id.getText());
 			ml.setVisible(true);
-			try {
-				userSocket = new Socket("localhost",SguoConst.UPORT);
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				userSocket = new Socket("localhost",SguoConst.UPORT);
+//			} catch (UnknownHostException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
 		}else {
 			JOptionPane.showMessageDialog(null,"로그인 실패");
 		}

@@ -1,9 +1,9 @@
 package com.kitri.sguo.model.login;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -191,8 +192,8 @@ public class MemberDAO {
 		ResultSet rs = null;
 		String query = "SELECT R.USER_ID, R.VICTORY, R.DRAW, R.DEFEAT, O.USER_IMAGE\r\n"
 				+ "FROM OMOK_USER O, USER_RECODE R\r\n" + "WHERE O.USER_ID = R.USER_ID AND O.USER_ID = ?";
-		InputStream is = null;
-		FileOutputStream fos = null;
+		InputStream in = null;
+		BufferedImage bi = null;
 		int len = 0;
 		byte[] buf = new byte[1024];
 		try {
@@ -204,19 +205,13 @@ public class MemberDAO {
 				list.add(rs.getInt(2));
 				list.add(rs.getInt(3));
 				list.add(rs.getInt(4));
-				is = rs.getBinaryStream(5);
-				while (true) {
-					try {
-						len = is.read(buf);
-						if (len <= 0) break;
-						fos.write(buf, 0, len);
-						list.add(fos);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+				in = rs.getBinaryStream(5);
+				try {
+					bi = ImageIO.read(in);
+					list.add(bi);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
