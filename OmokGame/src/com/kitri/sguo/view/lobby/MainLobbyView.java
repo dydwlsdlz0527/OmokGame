@@ -1,20 +1,26 @@
 package com.kitri.sguo.view.lobby;
 
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import com.kitri.sguo.controller.lobby.LobbyController;
 import com.kitri.sguo.model.login.MemberDAO;
-import java.awt.Color;
 
 //로그인 후 들어가는 방
 //게임 대기 방
 public class MainLobbyView extends JFrame{
 	
-	private MemberDAO mdao = new MemberDAO();
-	public MainBtnsP lobbyBtns;
-	private JPanel rankview;
-	private UserInfoP userInfo;
+	MemberDAO mdao = new MemberDAO();
+	MainBtnsP lobbyBtns;
+	JPanel rankview;
+	UserInfoP userInfo;
+	JPanel gameRooms;
 	
 	public MainLobbyView(String memberid) {
 		getContentPane().setBackground(Color.ORANGE);
@@ -32,11 +38,15 @@ public class MainLobbyView extends JFrame{
 		userInfo.setBounds(0, 0, 365, 277);
 		getContentPane().add(userInfo);
 		
-		JPanel gameRooms = new RoomsP();
+		gameRooms = new JPanel(new GridLayout(10,2));
+		JScrollPane png = new JScrollPane(gameRooms);
+		png.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		png.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		gameRooms.setBackground(Color.ORANGE);
 		gameRooms.setForeground(Color.BLACK);
-		gameRooms.setBounds(363, 0, 630, 277);
-		getContentPane().add(gameRooms);
+		png.setBounds(362, 0, 630, 278);
+		getContentPane().add(png);
+		
 		
 		rankview = new JPanel();
 		rankview.setBackground(Color.ORANGE);

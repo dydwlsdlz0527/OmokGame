@@ -41,7 +41,7 @@ public class LobbyController extends JPanel implements ActionListener{
 		}else if(cmd.equals("1:1 쪽지")){
 			
 		}else if(cmd.equals("방만들기")) {
-			new MakeRoomF(userid);
+			new MakeRoomF(userid, mainlobbyview);
 		}else if(cmd.equals("혼자하기")) {
 			new GameView();
 		}else if(cmd.equals("게임정보")) {

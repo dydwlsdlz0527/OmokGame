@@ -30,7 +30,7 @@ public class MakeRoomF extends JFrame{
 	BufferedReader in;
 	BufferedWriter out;
 	
-	public MakeRoomF(String userid) {
+	public MakeRoomF(String userid, MainLobbyView mainlobbyview) {
 
 		this.userid = userid;
 		setTitle("\uAC8C\uC784\uBC29 \uB9CC\uB4E4\uAE30");
@@ -94,8 +94,8 @@ public class MakeRoomF extends JFrame{
 			MemberDAO mdao = new MemberDAO();
 			List<Object> list = mdao.getUserRoomInfo(userid);
 			@Override
-			public void actionPerformed(ActionEvent arg0) {		
-				new RoomsP();
+			public void actionPerformed(ActionEvent e) {		
+				mainlobbyview.gameRooms.add(new RoomsP());
 			}
 		});
 	}

@@ -50,7 +50,7 @@ public class UserSoc {
 			}
 		}
 	}
-	
+	//서버에서 데이터 받기
 	void receive() {
 		while(true) {
 			try {
@@ -73,7 +73,7 @@ public class UserSoc {
 			}
 		}
 	}
-	
+	//서버에 데이터 보내기
 	void send(String data) {
 		Thread thread = new Thread() {
 			public void run() {

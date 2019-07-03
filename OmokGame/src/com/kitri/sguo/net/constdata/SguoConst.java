@@ -6,4 +6,6 @@ public class SguoConst {
 	public static final int SPORT = 7777;
 	//게임방 만들었을 때
 	public static final int LRPROT = 3000;
+	//메시지 받는 포트
+	public static final int MSGPORT = 4000;
 }
