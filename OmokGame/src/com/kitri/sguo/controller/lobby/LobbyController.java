@@ -8,7 +8,9 @@ import javax.swing.JPanel;
 
 import com.kitri.sguo.model.lobby.LobbyCommandImpl;
 import com.kitri.sguo.model.login.MemberDTO;
+import com.kitri.sguo.view.game.GameView;
 import com.kitri.sguo.view.lobby.MainLobbyView;
+import com.kitri.sguo.view.lobby.MakeRoomF;
 import com.kitri.sguo.view.lobby.ModifyUserInfoView;
 import com.kitri.sguo.view.login.LoginView;
 
@@ -39,9 +41,9 @@ public class LobbyController extends JPanel implements ActionListener{
 		}else if(cmd.equals("1:1 쪽지")){
 			
 		}else if(cmd.equals("방만들기")) {
-			
+			new MakeRoomF(userid);
 		}else if(cmd.equals("혼자하기")) {
-			
+			new GameView();
 		}else if(cmd.equals("게임정보")) {
 			
 		}else if(cmd.equals("탈퇴")) {
@@ -53,7 +55,7 @@ public class LobbyController extends JPanel implements ActionListener{
 			}
 		}else if(cmd.equals("수정")) {
 			//나중에
-			//MemberDTO mdto = lci.getUserInfo(userid);
+			//MemberDTO mdto = lci.ModifyUserInfo(userid);
 			//new ModifyUserInfoView();
 		}
 	}

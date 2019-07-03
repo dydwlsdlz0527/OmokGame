@@ -48,7 +48,6 @@ public class ImageP extends JPanel {
 				h = newHeight;
 			}
 			resizeIamge = bi.getScaledInstance(w, h, Image.SCALE_SMOOTH);
-			System.out.println(newImage);
 			invalidate();
 			repaint();
 		} catch (IOException e) {

@@ -13,5 +13,5 @@ public interface LobbyCommand {
 	public abstract void DeleteUser(String userid);
 	
 	//회원의 모든 정보 가져오기
-	public abstract MemberDTO getUserInfo(String userid);
+	public abstract MemberDTO ModifyUserInfo(String userid);
 }

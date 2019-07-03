@@ -7,6 +7,7 @@ import com.kitri.sguo.controller.lobby.LobbyController;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 public class MainBtnsP extends JPanel{
 	
@@ -17,6 +18,7 @@ public class MainBtnsP extends JPanel{
 	JButton gamewithcombtn;
 
 	public MainBtnsP() {
+		setBackground(Color.ORANGE);
 		setLayout(null);
 		
 		makeroombtn = new JButton("\uBC29\uB9CC\uB4E4\uAE30");

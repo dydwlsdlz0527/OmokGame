@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import com.kitri.sguo.controller.login.LoginController;
+import java.awt.Font;
 
 public class LoginView extends JFrame {
 
@@ -30,7 +31,6 @@ public class LoginView extends JFrame {
 	private Image img;
 	private BufferedImage bi;
 	
-
 	public LoginView() {
 		getContentPane().setBackground(Color.ORANGE);
 		//게임화면 설정
@@ -71,7 +71,7 @@ public class LoginView extends JFrame {
 		
 		//메인 이미지 읽어오기
 		try {
-			bi = ImageIO.read(new File("image/mainimage.jpg"));
+			bi = ImageIO.read(new File("image/omokimage.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,7 +86,8 @@ public class LoginView extends JFrame {
 				setOpaque(false);
 			}
 		};
-		mainimgpanel.setBounds(182, 112, 600, 280);
+		mainimgpanel.setBackground(Color.ORANGE);
+		mainimgpanel.setBounds(152, 112, 302, 280);
 		//mainimgpanel.setVisible(true);
 		getContentPane().add(mainimgpanel);
 		mainimgpanel.setVisible(true);
@@ -98,6 +99,16 @@ public class LoginView extends JFrame {
 		exitbtn = new JButton("나가기");
 		exitbtn.setBounds(550, 464, 97, 46);
 		getContentPane().add(exitbtn);
+		
+		JLabel gameTitle = new JLabel("Swing\uC73C\uB85C \uAD6C\uD604\uD55C \uC624\uBAA9 \uAC8C\uC784");
+		gameTitle.setFont(new Font("궁서", Font.BOLD, 30));
+		gameTitle.setBounds(466, 156, 455, 93);
+		getContentPane().add(gameTitle);
+		
+		JLabel gameTitle2 = new JLabel("\uC2A4\uAD6C\uC624 Project");
+		gameTitle2.setFont(new Font("궁서", Font.BOLD, 30));
+		gameTitle2.setBounds(466, 216, 336, 93);
+		getContentPane().add(gameTitle2);
 		
 	}
 	

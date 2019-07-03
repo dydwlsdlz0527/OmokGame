@@ -25,10 +25,11 @@ public class LobbyCommandImpl implements LobbyCommand{
 		mdao.deleteUser(userid);
 	}
 
+	//회원정보수정할 때 필요한 값.
 	@Override
-	public MemberDTO getUserInfo(String userid) {
+	public MemberDTO ModifyUserInfo(String userid) {
 		MemberDTO mdto = mdao.getUserModify(userid);
-		return null;
+		return mdto;
 	}
 
 }

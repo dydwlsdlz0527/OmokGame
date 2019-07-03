@@ -309,5 +309,44 @@ public class MemberDAO {
 		
 		return null;
 	}
+	
+	public List<Object> getUserRoomInfo(String userid){
+		List<Object> list = new ArrayList<>();
+		Connect();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String query = "SELECT M1.NID, M2.N2R, M2.N2N\r\n" + 
+				"FROM                  \r\n" + 
+				"(SELECT O1.USER_ID NID, R1.RATING NR\r\n" + 
+				" FROM OMOK_USER O1, USER_RATING R1\r\n" + 
+				" WHERE O1.USER_ID = ? AND \r\n" + 
+				" O1.TOTAL_SCORE BETWEEN LOSCORE AND HISCORE) M1, (SELECT I.RATING N2R, I.RATINGNAME N2N\r\n" + 
+				"                                                        FROM USER_RATING R, RATING_INFO I\r\n" + 
+				"                                                        WHERE R.RATING = I.RATING) M2\r\n" + 
+				"WHERE M1.NR = M2.N2R";
+		
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1,userid);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				list.add(rs.getString(1));
+				list.add(rs.getInt(2));
+				list.add(rs.getString(3));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				rs.close();
+				pstmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
 
 }
