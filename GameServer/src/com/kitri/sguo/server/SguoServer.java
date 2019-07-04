@@ -35,8 +35,6 @@ public class SguoServer {
 	DataOutputStream dos = null;
 	DataInputStream dis = null;
 
-	int PW = 123;
-
 	public SguoServer() {
 		JFrame f = new JFrame();
 		JButton bt = new JButton("서버열기");
@@ -49,7 +47,6 @@ public class SguoServer {
 				serverStart();
 			}
 		});
-
 	}
 
 	public void serverStart() {
@@ -62,7 +59,7 @@ public class SguoServer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			if (!serverSocket.isClosed()) {
-				// stopServer();
+				stopServer();
 			}
 			return;
 		}
@@ -79,10 +76,9 @@ public class SguoServer {
 						// 클라이언트 소켓을 구분함.
 						// 왜? 서버는 스레드풀을 사용해 사용자의 요청을 계속 받아야하기 때문에.
 						ClientSample client = new ClientSample(socket);
-						System.out.println(client + "@@@");
+						System.out.println("서버의 클라이언트 소켓 : " + client);
 						// 클라이언트 객체를 리스트에 담음.
 						connections.add(client);
-						System.out.println(connections.size());
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						if (!serverSocket.isClosed()) {
@@ -93,7 +89,6 @@ public class SguoServer {
 				}
 			}
 		};
-		// 스레드 풀에서 처리.
 		executorService.submit(runnable);
 	}
 
@@ -116,33 +111,19 @@ public class SguoServer {
 		}
 	}
 
-	// 방이 만들어졌을 때
-	public void makeRoom(List<Object> list) {
-		Runnable runnable = new Runnable() {
-			public void run() {
-				while (true) {
-
-				}
-			}
-		};
-		// 스레드 풀에서 처리.
-		executorService.submit(runnable);
-	}
-
 	public static void main(String[] args) {
 		new SguoServer();
 	}
 
 	// 서버에서 다수의 클라이언트를 연결하기 때문에 클라이언트 별로 고유한 데이터를 저장하기 위해 인스턴스를 관리한다.
 	class ClientSample {
-
 		Socket socket;
 
 		public ClientSample(Socket socket) {
 			this.socket = socket;
 			receive();
 		}
-
+		//서버가 메세지 보내기.
 		void send(String data) {
 			Runnable runnable = new Runnable() {
 				@Override
@@ -150,10 +131,7 @@ public class SguoServer {
 					try {
 						byte[] Arr = data.getBytes("UTF-8");
 						OutputStream outputStream = socket.getOutputStream();
-						System.out.println(socket);
-						System.out.println(socket.getRemoteSocketAddress() + "@@@");
 						outputStream.write(Arr);
-						System.out.println("서버에 데이터가 전송됨");
 						outputStream.flush();
 					} catch (Exception e) {
 						try {
@@ -164,9 +142,10 @@ public class SguoServer {
 					}
 				}
 			};
+			executorService.submit(runnable);
 		}
 
-		// 서버에서 보낸 데이터 받기
+		// 클라이언트가 서버에 보낸 메세지 받기.
 		void receive() {
 			Runnable runnable = new Runnable() {
 				@Override
@@ -179,21 +158,35 @@ public class SguoServer {
 						if (readByteCount == -1) {
 							throw new IOException();
 						}
-						System.out.println(
-								"요청 처리 : " + socket.getRemoteSocketAddress() + ", " + Thread.currentThread().getName());
+//						System.out.println(
+//								"요청 처리 : " + socket.getRemoteSocketAddress() + ", " + Thread.currentThread().getName());
 						String message = new String(Arr, 0, readByteCount, "UTF-8");
-						String newmsg = SguoConst.MSGPORT + "||" + message;
-//						StringTokenizer st = new StringTokenizer(message);
-//						int protocol = Integer.parseInt(st.nextToken());
-//						switch (protocol) {
-//						//방만들기 포트 || 사용자 아이디 || 사용자 등급 || 방 제한 등급 || 입장한 사람 수
-//						case SguoConst.LRPROT: {
-//							String userid = st.nextToken();
-//							String userrkname = st.nextToken();
-//							String userrklimit = st.nextToken();
-//						}
-//						}
-
+						StringTokenizer st = new StringTokenizer(message,"||");
+						int protocol = Integer.parseInt(st.nextToken());
+						System.out.println("서버 쪽 포로토콜 : " + protocol);
+						switch (protocol) {
+						// 방만들기 포트 || 사용자 아이디 || 사용자 등급 || 방 제한 등급 || 입장한 사람 수
+						case SguoConst.LRPROT: {
+							String userid = st.nextToken();
+							String userrkname = st.nextToken();
+							String userrklimit = st.nextToken();
+							break;
+						}
+						// 보낸 사람 아이디 || 메세지
+						case SguoConst.MSGPORT: {
+							String userid = st.nextToken();
+							String txtmsg = st.nextToken();
+							message = SguoConst.MSGPORT+"||"+userid + "||" + txtmsg;
+							System.out.println("서버쪽 채팅 메세지 : " + message);
+							break;
+						}
+						case SguoConst.ULIST:{
+							String userid = st.nextToken();
+							message = SguoConst.ULIST+"||"+userid;
+							break;
+						}
+						}
+						System.out.println(message+"@@");
 						// 모든 클라이언트에게 보냄
 						for (ClientSample client : connections) {
 							client.send(message);
@@ -205,7 +198,8 @@ public class SguoServer {
 			};
 			executorService.submit(runnable);
 		}
-		//방 상태
+
+		// 방 상태
 		void roomstate() {
 			Runnable runnable = new Runnable() {
 				@Override
@@ -230,11 +224,9 @@ public class SguoServer {
 						e.printStackTrace();
 					}
 				}
-				
 			};
 			executorService.submit(runnable);
 		}
-		
 	}// 클래스 끝
 
 }

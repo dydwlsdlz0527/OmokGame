@@ -1,6 +1,9 @@
 package com.kitri.sguo.model.lobby;
 
+import javax.swing.JPanel;
+
 import com.kitri.sguo.model.login.MemberDTO;
+import com.kitri.sguo.view.lobby.MainLobbyView;
 
 public interface LobbyCommand {
 	//회원 정보 나타내기
@@ -14,4 +17,7 @@ public interface LobbyCommand {
 	
 	//회원의 모든 정보 가져오기
 	public abstract MemberDTO ModifyUserInfo(String userid);
+	
+	//게임방 만들기
+	public abstract void MakeGameRoom(String userid, MainLobbyView mainlobbyview);
 }

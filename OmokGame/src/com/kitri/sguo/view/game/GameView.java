@@ -15,9 +15,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import java.awt.Font;
 
 //오목 두는 화면
-public class GameView extends JFrame implements KeyListener{
+public class GameView extends JFrame implements KeyListener {
 	
 	private Container c;				//container 타입으로 c변수 선언
 	MapSize size = new MapSize();		//MapSize 클래스 객체 생성, 셀과 사이즈의 크기가 선언된다. 30x20
@@ -95,6 +96,7 @@ public class GameView extends JFrame implements KeyListener{
 		gamechatP.setLayout(new BorderLayout());
 		
 		gamechatarea = new JTextArea();
+		gamechatarea.setFont(new Font("Monospaced", Font.PLAIN, 13));
 		gamechatarea.setRows(12);
 		scrollPane = new JScrollPane(gamechatarea);
 		gamechatP.add(scrollPane, BorderLayout.NORTH);
@@ -102,6 +104,7 @@ public class GameView extends JFrame implements KeyListener{
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		
 		gamechattxt = new JTextField();
+		gamechattxt.setFont(new Font("굴림", Font.PLAIN, 15));
 		gamechatP.add(gamechattxt, BorderLayout.SOUTH);
 		gamechattxt.setColumns(50);
 		setResizable(false);
@@ -118,17 +121,15 @@ public class GameView extends JFrame implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+			String msg = gamechattxt.getText();
+			gamechattxt.setText("");
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if(e.getKeyCode()==KeyEvent.VK_ENTER) {
-			String msg = gamechattxt.getText();
-			gamechatarea.append(msg);
-			gamechattxt.setText("");
-		}
+		
 		
 	}
 
@@ -137,4 +138,5 @@ public class GameView extends JFrame implements KeyListener{
 		// TODO Auto-generated method stub
 		
 	}
+	
 }

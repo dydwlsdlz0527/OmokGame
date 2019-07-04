@@ -4,15 +4,22 @@ import javax.swing.JPanel;
 
 import com.kitri.sguo.model.login.MemberDAO;
 import com.kitri.sguo.model.login.MemberDTO;
+import com.kitri.sguo.view.lobby.MainLobbyView;
+import com.kitri.sguo.view.lobby.MakeRoomF;
 
 public class LobbyCommandImpl implements LobbyCommand{
 	
-	private JPanel jp;
-	private MemberDAO mdao = new MemberDAO();
+	JPanel jp;
+	MemberDAO mdao = new MemberDAO();
+	MainLobbyView mainlobbyview;
+	String userid;
+	JPanel gameRooms;
 
-	public LobbyCommandImpl(JPanel jp) {
+	public LobbyCommandImpl(String userid, MainLobbyView mainlobbyview, JPanel jp) {
 		// TODO Auto-generated constructor stub
 		this.jp = jp;
+		this.mainlobbyview = mainlobbyview;
+		this.userid = userid;
 	}
 
 	@Override
@@ -30,6 +37,11 @@ public class LobbyCommandImpl implements LobbyCommand{
 	public MemberDTO ModifyUserInfo(String userid) {
 		MemberDTO mdto = mdao.getUserModify(userid);
 		return mdto;
+	}
+	
+	@Override
+	public void MakeGameRoom(String userid, MainLobbyView mainlobbyview) {
+		new MakeRoomF(userid, mainlobbyview);
 	}
 
 }

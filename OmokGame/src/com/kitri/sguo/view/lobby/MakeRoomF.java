@@ -11,27 +11,33 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import com.kitri.sguo.model.login.MemberDAO;
+import com.kitri.sguo.view.lobby.RoomsP;
 
 public class MakeRoomF extends JFrame{
-	private JTextField textField;
-	private JRadioButton rd1;
-	private JRadioButton rd2;
-	private JRadioButton rd3;
-	private JRadioButton rd4;
-	private JLabel userlevel;
-	private JButton makeroombtn;
-	private JButton cancelroom;
-	private String userid;
+	JTextField textField;
+	JRadioButton rd1;
+	JRadioButton rd2;
+	JRadioButton rd3;
+	JRadioButton rd4;
+	JLabel userlevel;
+	JButton makeroombtn;
+	JButton cancelroom;
+	String userid;
+	MainLobbyView mainlobbyview;
 	
 	BufferedReader in;
 	BufferedWriter out;
+	private ButtonGroup bg;
 	
 	public MakeRoomF(String userid, MainLobbyView mainlobbyview) {
 
+		this.mainlobbyview = mainlobbyview;
 		this.userid = userid;
 		setTitle("\uAC8C\uC784\uBC29 \uB9CC\uB4E4\uAE30");
 		getContentPane().setLayout(null);
@@ -62,7 +68,7 @@ public class MakeRoomF extends JFrame{
 		rd4.setBounds(338, 99, 75, 23);
 		getContentPane().add(rd4);
 		
-		ButtonGroup bg = new ButtonGroup();
+		bg = new ButtonGroup();
 		bg.add(rd1);
 		bg.add(rd2);
 		bg.add(rd3);
@@ -90,13 +96,40 @@ public class MakeRoomF extends JFrame{
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		makeroombtn.addActionListener(new ActionListener() {
-			
-			MemberDAO mdao = new MemberDAO();
-			List<Object> list = mdao.getUserRoomInfo(userid);
 			@Override
-			public void actionPerformed(ActionEvent e) {		
-				mainlobbyview.gameRooms.add(new RoomsP());
+			public void actionPerformed(ActionEvent e) {
+				//선택된 라디오 버튼 가져오기
+				String limitrank;
+				if(rd1.isSelected()) {
+					limitrank = rd1.getText();
+				}else if(rd2.isSelected()) {
+					limitrank = rd2.getText();
+				}else if(rd3.isSelected()) {
+					limitrank = rd3.getText();
+				}else {
+					limitrank = rd4.getText();
+				}
+				MemberDAO mdao = new MemberDAO();
+				String userrankname =  mdao.getUserRoomInfo(userid);
+				System.out.println(userid+" "+textField.getText()+" "+userrankname+" "+limitrank);
+				if(textField.getText().trim()==null||limitrank.isEmpty()) {
+					JOptionPane.showMessageDialog(null,"작성 내용을 다시 확인하세요.");
+				}else {
+					//방 제목, 방장 등급, 제한 등급 (이상)
+					mainlobbyview.gameRooms.add(new RoomsP(userid,textField.getText(),userrankname,limitrank));
+					mainlobbyview.png.getVerticalScrollBar().setValue(mainlobbyview.png.getVerticalScrollBar().getMinimum()+10);
+					mainlobbyview.gameRooms.repaint();
+					dispose();
+				}
 			}
 		});
+		//취소
+		cancelroom.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+
 	}
 }

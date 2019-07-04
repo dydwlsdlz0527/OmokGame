@@ -310,29 +310,26 @@ public class MemberDAO {
 		return null;
 	}
 	
-	public List<Object> getUserRoomInfo(String userid){
-		List<Object> list = new ArrayList<>();
+	public String getUserRoomInfo(String userid){
+		String userrankname = null;
 		Connect();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String query = "SELECT M1.NID, M2.N2R, M2.N2N\r\n" + 
-				"FROM                  \r\n" + 
-				"(SELECT O1.USER_ID NID, R1.RATING NR\r\n" + 
-				" FROM OMOK_USER O1, USER_RATING R1\r\n" + 
-				" WHERE O1.USER_ID = ? AND \r\n" + 
-				" O1.TOTAL_SCORE BETWEEN LOSCORE AND HISCORE) M1, (SELECT I.RATING N2R, I.RATINGNAME N2N\r\n" + 
-				"                                                        FROM USER_RATING R, RATING_INFO I\r\n" + 
-				"                                                        WHERE R.RATING = I.RATING) M2\r\n" + 
-				"WHERE M1.NR = M2.N2R";
-		
+		String query = "SELECT M2.M2M\r\n" + 
+				"FROM\r\n" + 
+				"(SELECT USER_ID M1ID, RATING M1R\r\n" + 
+				"FROM OMOK_USER, USER_RATING\r\n" + 
+				"WHERE USER_ID = ? AND TOTAL_SCORE BETWEEN LOSCORE AND HISCORE) M1,\r\n" + 
+				"(SELECT USER_RATING.RATING M2R, RATING_INFO.RATINGNAME M2M\r\n" + 
+				"FROM USER_RATING, RATING_INFO\r\n" + 
+				"WHERE USER_RATING.RATING = RATING_INFO.RATING) M2\r\n" + 
+				"WHERE M1.M1R = M2.M2R";
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1,userid);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
-				list.add(rs.getString(1));
-				list.add(rs.getInt(2));
-				list.add(rs.getString(3));
+				userrankname = rs.getString(1);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -345,8 +342,7 @@ public class MemberDAO {
 				e.printStackTrace();
 			}
 		}
-		
-		return list;
+		return userrankname;
 	}
 
 }
