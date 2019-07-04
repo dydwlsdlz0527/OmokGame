@@ -21,6 +21,7 @@ import com.kitri.sguo.controller.lobby.LobbyController;
 import com.kitri.sguo.model.login.MemberDAO;
 import com.kitri.sguo.net.client.ClientSocket;
 import com.kitri.sguo.net.constdata.SguoConst;
+import com.kitri.sguo.view.game.GameView;
 
 //로그인 후 들어가는 방
 //게임 대기 방
@@ -89,6 +90,13 @@ public class MainLobbyView extends JFrame {
 
 		// 접속한 유저의 소켓 생성.
 		startClient();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		listuser();
 	}
 
 	public void MakeLobbyController() {
@@ -104,37 +112,37 @@ public class MainLobbyView extends JFrame {
 	}
 
 	void startClient() {
-			try {
-				// 싱글톤 패턴
-				// 게임에 접속한 유저의 소켓 생성.
-				socket = ClientSocket.getSocket();
-				// 서버에 연결 요청.
-				// socket.connect(new InetSocketAddress("localhost", SguoConst.SPORT));
-				System.out.println("서버에 연결.");
-			} catch (Exception e) {
-				if (!socket.isClosed()) {
-					stopClient();
-				}
-				e.printStackTrace();
-			}
-			Runnable runnable = new Runnable() {
+		Thread thread = new Thread() {
 			@Override
 			public void run() {
-				while(true) {
-				send(SguoConst.ULIST + "||" + memberid);
-				receive();
+				try {
+					// 싱글톤 패턴
+					// 게임에 접속한 유저의 소켓 생성.
+					socket = ClientSocket.getSocket();
+					// 서버에 연결 요청.
+					// socket.connect(new InetSocketAddress("localhost", SguoConst.SPORT));
+					System.out.println("서버에 연결.");
+				} catch (Exception e) {
+					if (!socket.isClosed()) {
+						stopClient();
+					}
+					e.printStackTrace();
 				}
+				receive();
 			}
 		};
-		executorService.submit(runnable);
-		
-//		Thread thread = new Thread() {
-//			@Override
-//			public void run() {
-//				
-//			}
-//		};
-//		thread.start();
+		thread.start();
+		thread.setPriority(Thread.MAX_PRIORITY);
+	}
+
+	void listuser() {
+		Thread thread = new Thread() {
+			@Override
+			public void run() {
+				send(SguoConst.ULIST + "||" + memberid);
+			}
+		};
+		thread.start();
 	}
 
 	void stopClient() {
@@ -190,9 +198,33 @@ public class MainLobbyView extends JFrame {
 					break;
 				}
 				case SguoConst.ULIST: {
-					String userid = st.nextToken();
-					chattingview.userlist.append(userid + "\n");
+					chattingview.userlist.setText("");
+					while (st.hasMoreTokens()) {
+						chattingview.userlist.append(st.nextToken() + "\n");
+					}
 					break;
+				}
+				// 방 번호 || 아이디 || 방제 || 아이디 || 방장등급 || 제한등급
+				case SguoConst.MRPROT: {
+					String roomnum = st.nextToken();
+					String roomtitle = st.nextToken();
+					String userid = st.nextToken();
+					String userrkname = st.nextToken();
+					String userrklimit = st.nextToken();
+					gameRooms.add(new RoomsP(Integer.parseInt(roomnum),roomtitle,userid,userrkname,userrklimit));
+					break;
+				}
+				case SguoConst.GoGame:{
+					//어떤 방인지 찾아야함.
+					String roomnum = st.nextToken();
+					String userimg = st.nextToken();
+					String userid = st.nextToken();
+					String shift = st.nextToken();
+					for(int i=0;i<SguoConst.ROOMNUM;i++) {
+						if(String.valueOf(i).equals(roomnum)) {
+							new GameView(userimg, userid, shift);
+						}
+					}
 				}
 				}
 			} catch (IOException e) {

@@ -20,24 +20,24 @@ import java.awt.Font;
 //오목 두는 화면
 public class GameView extends JFrame implements KeyListener {
 	
-	private Container c;				//container 타입으로 c변수 선언
+	Container c;						//container 타입으로 c변수 선언
 	MapSize size = new MapSize();		//MapSize 클래스 객체 생성, 셀과 사이즈의 크기가 선언된다. 30x20
-	private JTextField gamechattxt;
-	private Map map;
-	private DrawBoard d;
-	private JTextArea gamechatarea;
-	private JScrollPane scrollPane;
-	private JButton gameexit;
-	private JButton rego;
-	private JButton startgame;
-	private JLabel p2shift;
-	private JLabel p2id;
-	private JLabel p1shift;
-	private JLabel p1id;
-	private JPanel p2userP;
-	private JPanel p1userP;
+	JTextField gamechattxt;
+	Map map;
+	DrawBoard d;
+	JTextArea gamechatarea;
+	JScrollPane scrollPane;
+	JButton gameexit;
+	JButton rego;
+	JButton startgame;
+	JLabel p2shift;
+	JLabel p2id;
+	JLabel p1shift;
+	JLabel p1id;
+	JPanel p2userP;
+	JPanel p1userP;
 	
-	public GameView() {			//GUI 생성자 실행
+	public GameView(String userimg, String userid, String shift) {			//GUI 생성자 실행
 		c = getContentPane();
 		setBounds(200, 20, 947, 687);	//컨테이너 위치와 크기를 생성.
 		c.setLayout(null);

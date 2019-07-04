@@ -42,7 +42,7 @@ public class LobbyController extends JPanel implements ActionListener{
 			lci.MakeGameRoom(userid, mainlobbyview);
 			mainlobbyview.repaint();
 		}else if(cmd.equals("È¥ÀÚÇÏ±â")) {
-			new GameView();
+			//new GameView();
 		}else if(cmd.equals("°ÔÀÓÁ¤º¸")) {
 			
 		}else if(cmd.equals("Å»Åð")) {

@@ -29,8 +29,11 @@ public class SguoServer {
 	ExecutorService executorService;
 	// 서버 소켓.
 	ServerSocket serverSocket = null;
-	// 서버에 접속한 클라이언트 담기.
-	List<ClientSample> connections = new Vector<>();
+	// 서버에 접속한 클라이언트
+	Vector<ClientSample> connections = new Vector<>();
+	// 개설된 게임방
+	// Vector<GameRoom> groom = new Vector<>();
+	Vector<String> ulist = new Vector<>();
 	Socket socket;
 	DataOutputStream dos = null;
 	DataInputStream dis = null;
@@ -123,7 +126,8 @@ public class SguoServer {
 			this.socket = socket;
 			receive();
 		}
-		//서버가 메세지 보내기.
+
+		// 서버가 메세지 보내기.
 		void send(String data) {
 			Runnable runnable = new Runnable() {
 				@Override
@@ -136,7 +140,6 @@ public class SguoServer {
 					} catch (Exception e) {
 						try {
 							socket.close();
-							e.printStackTrace();
 						} catch (IOException e2) {
 						}
 					}
@@ -150,52 +153,75 @@ public class SguoServer {
 			Runnable runnable = new Runnable() {
 				@Override
 				public void run() {
-					try {
-						InputStream inputStream = socket.getInputStream();
-						byte[] Arr = new byte[100];
-						// 데이터 받기, 클라이언트가 비정상적으로 종료했을 경우 IOException 발생
-						int readByteCount = inputStream.read(Arr);
-						if (readByteCount == -1) {
-							throw new IOException();
-						}
+					while (true) {
+						try {
+							InputStream inputStream = socket.getInputStream();
+							byte[] Arr = new byte[100];
+							// 데이터 받기, 클라이언트가 비정상적으로 종료했을 경우 IOException 발생
+							int readByteCount = inputStream.read(Arr);
+							if (readByteCount == -1) {
+								throw new IOException();
+							}
 //						System.out.println(
 //								"요청 처리 : " + socket.getRemoteSocketAddress() + ", " + Thread.currentThread().getName());
-						String message = new String(Arr, 0, readByteCount, "UTF-8");
-						StringTokenizer st = new StringTokenizer(message,"||");
-						int protocol = Integer.parseInt(st.nextToken());
-						System.out.println("서버 쪽 포로토콜 : " + protocol);
-						switch (protocol) {
-						// 방만들기 포트 || 사용자 아이디 || 사용자 등급 || 방 제한 등급 || 입장한 사람 수
-						case SguoConst.LRPROT: {
-							String userid = st.nextToken();
-							String userrkname = st.nextToken();
-							String userrklimit = st.nextToken();
-							break;
+							String message = new String(Arr, 0, readByteCount, "UTF-8");
+							StringTokenizer st = new StringTokenizer(message, "||");
+							int protocol = Integer.parseInt(st.nextToken());
+							System.out.println("서버 쪽 포로토콜 : " + protocol);
+							switch (protocol) {
+							// 방 만들기 포트 || 방 번호 || 방제 || 아이디 || 방장 등급 || 제한 등급
+							case SguoConst.MRPROT: {
+								String roomnum = st.nextToken();
+								String roomtitle = st.nextToken();
+								String userid = st.nextToken();
+								String userrkname = st.nextToken();
+								String userrklimit = st.nextToken();
+								message = SguoConst.MRPROT+"||"+roomnum+"||"+roomtitle+"||"+userid+"||"+userrkname+"||"+userrklimit;
+								break;
+							}
+							// 보낸 사람 아이디 || 메세지
+							case SguoConst.MSGPORT: {
+								String userid = st.nextToken();
+								String txtmsg = st.nextToken();
+								message = SguoConst.MSGPORT + "||" + userid + "||" + txtmsg;
+								System.out.println("서버쪽 채팅 메세지 : " + message);
+								break;
+							}
+							case SguoConst.ULIST: {
+								String msg2 = SguoConst.ULIST + "||";
+								for (int i = 0; i < ulist.size(); i++) {
+									if (i != ulist.size()) {
+										msg2 += ulist.get(i) + "||";
+									}
+								}
+								System.out.println(msg2);
+								String userid = st.nextToken();
+								ulist.add(userid);
+								System.out.println("리스트 아이디 : " + userid);
+								message = msg2 + userid;
+								break;
+							}
+							// 방 번호 || 이미지 || 아이디 || 승률
+							case SguoConst.GoGame:{
+								String roomnum = st.nextToken();
+								String uimage = st.nextToken();
+								String userid = st.nextToken();
+								String shift = st.nextToken();
+								message = SguoConst.GoGame+"||"+roomnum+"||"+uimage+"||"+userid+"||"+shift;
+								break;
+							}
+							}
+							System.out.println(message + "@@");
+							// 모든 클라이언트에게 보냄
+							for (ClientSample client : connections) {
+								client.send(message);
+							}
+						} catch (IOException e) {
 						}
-						// 보낸 사람 아이디 || 메세지
-						case SguoConst.MSGPORT: {
-							String userid = st.nextToken();
-							String txtmsg = st.nextToken();
-							message = SguoConst.MSGPORT+"||"+userid + "||" + txtmsg;
-							System.out.println("서버쪽 채팅 메세지 : " + message);
-							break;
-						}
-						case SguoConst.ULIST:{
-							String userid = st.nextToken();
-							message = SguoConst.ULIST+"||"+userid;
-							break;
-						}
-						}
-						System.out.println(message+"@@");
-						// 모든 클라이언트에게 보냄
-						for (ClientSample client : connections) {
-							client.send(message);
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
 					}
 				}
 			};
+
 			executorService.submit(runnable);
 		}
 
@@ -215,7 +241,7 @@ public class SguoServer {
 						System.out.println(
 								"요청 처리 : " + socket.getRemoteSocketAddress() + ", " + Thread.currentThread().getName());
 						String message = new String(Arr, 0, readByteCount, "UTF-8");
-						String newmsg = SguoConst.LRPROT + "||" + message;
+						String newmsg = SguoConst.MRPROT + "||" + message;
 						for (ClientSample client : connections) {
 							client.send(message);
 						}

@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
@@ -12,12 +15,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import com.kitri.sguo.model.login.MemberDAO;
-import com.kitri.sguo.view.lobby.RoomsP;
+import com.kitri.sguo.net.client.ClientSocket;
+import com.kitri.sguo.net.constdata.SguoConst;
 
 public class MakeRoomF extends JFrame{
 	JTextField textField;
@@ -30,13 +33,17 @@ public class MakeRoomF extends JFrame{
 	JButton cancelroom;
 	String userid;
 	MainLobbyView mainlobbyview;
-	
+	String limitrank;
 	BufferedReader in;
 	BufferedWriter out;
-	private ButtonGroup bg;
+	Socket socket;
+	ButtonGroup bg;
+	String userrankname;
+	int roomnum;
 	
 	public MakeRoomF(String userid, MainLobbyView mainlobbyview) {
 
+		roomnum = SguoConst.ROOMNUM++;
 		this.mainlobbyview = mainlobbyview;
 		this.userid = userid;
 		setTitle("\uAC8C\uC784\uBC29 \uB9CC\uB4E4\uAE30");
@@ -96,10 +103,12 @@ public class MakeRoomF extends JFrame{
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		makeroombtn.addActionListener(new ActionListener() {
+			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//선택된 라디오 버튼 가져오기
-				String limitrank;
+				
 				if(rd1.isSelected()) {
 					limitrank = rd1.getText();
 				}else if(rd2.isSelected()) {
@@ -110,13 +119,13 @@ public class MakeRoomF extends JFrame{
 					limitrank = rd4.getText();
 				}
 				MemberDAO mdao = new MemberDAO();
-				String userrankname =  mdao.getUserRoomInfo(userid);
+				userrankname = mdao.getUserRoomInfo(userid);
 				System.out.println(userid+" "+textField.getText()+" "+userrankname+" "+limitrank);
 				if(textField.getText().trim()==null||limitrank.isEmpty()) {
 					JOptionPane.showMessageDialog(null,"작성 내용을 다시 확인하세요.");
 				}else {
-					//방 제목, 방장 등급, 제한 등급 (이상)
-					mainlobbyview.gameRooms.add(new RoomsP(userid,textField.getText(),userrankname,limitrank));
+					//방 제목, 방장 등급, 제한 등급
+					MakeGameRoom();
 					mainlobbyview.png.getVerticalScrollBar().setValue(mainlobbyview.png.getVerticalScrollBar().getMinimum()+10);
 					mainlobbyview.gameRooms.repaint();
 					dispose();
@@ -130,6 +139,33 @@ public class MakeRoomF extends JFrame{
 				dispose();
 			}
 		});
-
+	}
+	
+	//방만들기포트 || 방 번호 || 방제 || 아이디 || 방장 등급 || 제한 등급
+	void MakeGameRoom() {
+		socket = ClientSocket.getSocket();
+		String data = SguoConst.MRPROT+"||"+roomnum+"||"+textField.getText()+"||"+ userid+"||"+userrankname+"||"+limitrank;
+		send(data);
+	}
+	
+	void send(String data) {
+		Thread thread = new Thread() {
+			public void run() {
+				try {
+					System.out.println("서버에 보내는 데이터 : " + data);
+					byte[] byteArr = data.getBytes("UTF-8");
+					OutputStream outputStream = socket.getOutputStream();
+					outputStream.write(byteArr);
+					outputStream.flush();
+				} catch (Exception e) {
+					try {
+						socket.close();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		};
+		thread.start();
 	}
 }
