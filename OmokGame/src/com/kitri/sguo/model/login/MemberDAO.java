@@ -31,7 +31,7 @@ public class MemberDAO {
 	Connection conn;
 
 	public void Connect() {
-		DB_URL = "jdbc:oracle:thin:@localhost:1521:orcl";
+		DB_URL = "jdbc:oracle:thin:@localhost:1521:xe";
 		DB_USER = "c##sguo";
 		DB_PASSWORD = "1234";
 		conn = null;
@@ -253,7 +253,7 @@ public class MemberDAO {
 		
 		return list;
 	}
-
+	
 	public void ModifyPW(String idstr, String pwstr) {
 		String salt = SHA256Util.generateSalt();
 		String password =  SHA256Util.getEncrypt(pwstr, salt);

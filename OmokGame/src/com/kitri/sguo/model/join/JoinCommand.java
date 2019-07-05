@@ -19,4 +19,5 @@ public interface JoinCommand {
 	
 	//이미지 추가
 	public abstract void paintimage(String imagepath, ImageP imagep);
+	
 }

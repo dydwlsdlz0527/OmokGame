@@ -17,7 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.kitri.sguo.model.login.MemberDAO;
+import com.kitri.sguo.model.game.GameUser;
+import com.kitri.sguo.model.game.RoomManager;
 import com.kitri.sguo.net.client.ClientSocket;
 import com.kitri.sguo.net.constdata.SguoConst;
 import com.kitri.sguo.view.game.GameView;
@@ -32,6 +33,9 @@ public class RoomsP extends JPanel{
 	JLabel roomtitle;
 	Socket socket;
 	int roomnum;
+	GameUser user;
+	GameView room;
+	List<Object> playerinfo;
 	
 	public RoomsP() {
 		setBackground(Color.ORANGE);
@@ -44,7 +48,7 @@ public class RoomsP extends JPanel{
 		add(roomintro);
 	}
 
-	public RoomsP(int roomnum, String userid, String RoomTitle, String userrankname, String limitrank) {
+	public RoomsP(int roomnum, String RoomTitle, String userid,  String userrankname, String limitrank) {
 		this.roomnum = roomnum;
 		this.userid = userid;
 		setLayout(new GridLayout(4, 1));
@@ -57,33 +61,33 @@ public class RoomsP extends JPanel{
 		roombtn = new JButton("\uC785\uC7A5\uD558\uAE30");
 		add(roombtn);
 		setSize(315,139);
+		System.out.println("ROOMSP에 방 번호 :" + roomnum);
 	
 		roombtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int result = JOptionPane.showConfirmDialog(null, "입장하시겠습니까?","Confirm",JOptionPane.YES_NO_OPTION);
 				if(result==JOptionPane.YES_OPTION) {
-					//예를 선택할 경우.
-					//new GameView();
+					
+//					MemberDAO mdao = new MemberDAO();
+//					playerinfo = mdao.getUserInfo(userid);
+//					double total = (int)playerinfo.get(1)+(int)playerinfo.get(2)+(int)playerinfo.get(3);
+//					user = new GameUser(String.valueOf(roomnum), String.valueOf(playerinfo.get(4)), String.valueOf(playerinfo.get(0)), String.valueOf(total));
+//					room = room.getRoom(String.valueOf(roomnum));
+//					room.enterUser(user);
+//					
+//					room.getowner();
+					searchRoom();
 				}
 			}
 		});
-	}
-	
-	public void OpenGame() {
-		socket = ClientSocket.getSocket();
-		MemberDAO mdao = new MemberDAO();
-		List<Object> ulist = mdao.getUserInfo(userid);
-		double total = (int)ulist.get(1)+(int)ulist.get(2)+(int)ulist.get(3);
-		// 방 번호 || 사용자 이미지 || 사용자 아이디 || 사용자 승률
-		String data = roomnum + "||"+ulist.get(4)+"||"+ulist.get(0)+"||"+String.valueOf(total);
-		send(data);
 	}
 	
 	void send(String data) {
 		Thread thread = new Thread() {
 			public void run() {
 				try {
+					socket = ClientSocket.getSocket();
 					System.out.println("서버에 보내는 데이터 : " + data);
 					byte[] byteArr = data.getBytes("UTF-8");
 					OutputStream outputStream = socket.getOutputStream();
@@ -99,6 +103,14 @@ public class RoomsP extends JPanel{
 			}
 		};
 		thread.start();
+	}
+	
+	void searchRoom() {
+		int goroomnum = roomnum;
+		System.out.println("선택한 방 번호 : " + goroomnum);
+		//System.out.println(room.getroomnum()+" : 선택한 방 번호 2" + room.getRoomId());
+		//room.setVisible(true);
+		send(SguoConst.GOGAME+"||"+goroomnum);
 	}
 	
 	

@@ -18,11 +18,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import com.kitri.sguo.model.game.GameUser;
+import com.kitri.sguo.model.game.RoomManager;
 import com.kitri.sguo.model.login.MemberDAO;
 import com.kitri.sguo.net.client.ClientSocket;
 import com.kitri.sguo.net.constdata.SguoConst;
 
 public class MakeRoomF extends JFrame{
+	
 	JTextField textField;
 	JRadioButton rd1;
 	JRadioButton rd2;
@@ -40,10 +43,12 @@ public class MakeRoomF extends JFrame{
 	ButtonGroup bg;
 	String userrankname;
 	int roomnum;
-	
+	RoomManager roommanager;
+	List<Object> ownerinfo;
+	GameUser owner;
+
 	public MakeRoomF(String userid, MainLobbyView mainlobbyview) {
 
-		roomnum = SguoConst.ROOMNUM++;
 		this.mainlobbyview = mainlobbyview;
 		this.userid = userid;
 		setTitle("\uAC8C\uC784\uBC29 \uB9CC\uB4E4\uAE30");
@@ -103,12 +108,10 @@ public class MakeRoomF extends JFrame{
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		makeroombtn.addActionListener(new ActionListener() {
-			
-
+		
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//선택된 라디오 버튼 가져오기
-				
 				if(rd1.isSelected()) {
 					limitrank = rd1.getText();
 				}else if(rd2.isSelected()) {
@@ -128,6 +131,12 @@ public class MakeRoomF extends JFrame{
 					MakeGameRoom();
 					mainlobbyview.png.getVerticalScrollBar().setValue(mainlobbyview.png.getVerticalScrollBar().getMinimum()+10);
 					mainlobbyview.gameRooms.repaint();
+					//방 번호 || 유저 이미지 || 유저 아이디 || 승률
+					//방 번호는 RoomManager가 만들어 줌.
+					ownerinfo = mdao.getUserInfo(userid);
+					double total = (int)ownerinfo.get(1)+(int)ownerinfo.get(2)+(int)ownerinfo.get(3);
+					owner = new GameUser(0, String.valueOf(ownerinfo.get(4)), String.valueOf(ownerinfo.get(0)), String.valueOf(total));
+					RoomManager.createRoom(owner);
 					dispose();
 				}
 			}
@@ -140,11 +149,12 @@ public class MakeRoomF extends JFrame{
 			}
 		});
 	}
-	
-	//방만들기포트 || 방 번호 || 방제 || 아이디 || 방장 등급 || 제한 등급
+	//패널에 게임방 보이게 하기.
+	//방만들기포트 || 방제 || 아이디 || 방장 등급 || 제한 등급
 	void MakeGameRoom() {
 		socket = ClientSocket.getSocket();
-		String data = SguoConst.MRPROT+"||"+roomnum+"||"+textField.getText()+"||"+ userid+"||"+userrankname+"||"+limitrank;
+		//실제적으로 게임방 보이게 만들기.
+		String data = SguoConst.MRPROT+"||"+textField.getText()+"||"+ userid+"||"+userrankname+"||"+limitrank;
 		send(data);
 	}
 	
@@ -168,4 +178,6 @@ public class MakeRoomF extends JFrame{
 		};
 		thread.start();
 	}
+	
+	
 }

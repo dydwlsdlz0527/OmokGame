@@ -5,6 +5,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,6 +17,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+
+import com.kitri.sguo.model.game.GameUser;
+
 import java.awt.Font;
 
 //오목 두는 화면
@@ -36,8 +41,21 @@ public class GameView extends JFrame implements KeyListener {
 	JLabel p1id;
 	JPanel p2userP;
 	JPanel p1userP;
+	GameUser user;
+	//게임 유저
+	List<GameUser> userList;
+	//방장
+	GameUser roomOwner;
+	//방 이름
+	String roomName;
+	//방 번호
+	String roomid;
+	//방장 아이디
+	String ownerid;
+	//방 번호
+	int roomnum;
 	
-	public GameView(String userimg, String userid, String shift) {			//GUI 생성자 실행
+	public GameView() {			//GUI 생성자 실행
 		c = getContentPane();
 		setBounds(200, 20, 947, 687);	//컨테이너 위치와 크기를 생성.
 		c.setLayout(null);
@@ -112,6 +130,106 @@ public class GameView extends JFrame implements KeyListener {
 		setVisible(true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	}
+	
+//	public GameView(String roomid) {
+//		super();
+//		this.roomid = roomid;
+//	}
+	
+	public GameView(GameUser user) {
+		super();
+		this.user = user;
+		this.roomnum = user.roomnum;
+		userList = new ArrayList<>();
+		user.enterRoom(this);
+		userList.add(user);
+		this.roomOwner = user;
+		
+		c = getContentPane();
+		setBounds(200, 20, 947, 687);	//컨테이너 위치와 크기를 생성.
+		c.setLayout(null);
+		map = new Map(size);
+		d = new DrawBoard(size, map);
+		d.setPreferredSize(new Dimension(300,300));		//드로우보드 사이즈 설정.
+		setContentPane(d);	//메인 프레임에 드로우보드 넣기.
+		
+		//이벤트처리 핸들러 생성.
+		addMouseListener(new MouseEventHandler(map, size, d, this));
+		
+		JPanel userP = new JPanel();
+		userP.setBounds(610, 10, 298, 610);
+		d.add(userP);
+		userP.setLayout(null);
+		
+		p1userP = new JPanel();
+		p1userP.setBounds(12, 10, 136, 179);
+		userP.add(p1userP);
+		
+		p2userP = new JPanel();
+		p2userP.setBounds(150, 10, 136, 179);
+		userP.add(p2userP);
+		
+		p1id = new JLabel("");
+		p1id.setBounds(12, 199, 136, 22);
+		userP.add(p1id);
+		
+		p1shift = new JLabel("");
+		p1shift.setBounds(12, 227, 136, 22);
+		userP.add(p1shift);
+		
+		p2id = new JLabel("");
+		p2id.setBounds(150, 199, 136, 22);
+		userP.add(p2id);
+		
+		p2shift = new JLabel("");
+		p2shift.setBounds(150, 227, 136, 22);
+		userP.add(p2shift);
+		
+		startgame = new JButton("\uC2DC\uC791");
+		startgame.setBounds(12, 259, 77, 45);
+		userP.add(startgame);
+		
+		rego = new JButton("\uBB34\uB974\uAE30");
+		rego.setBounds(111, 259, 77, 45);
+		userP.add(rego);
+		
+		gameexit = new JButton("\uB098\uAC00\uAE30");
+		gameexit.setBounds(209, 259, 77, 45);
+		userP.add(gameexit);
+		
+		JPanel gamechatP = new JPanel();
+		gamechatP.setBounds(12, 324, 274, 276);
+		userP.add(gamechatP);
+		gamechatP.setLayout(new BorderLayout());
+		
+		gamechatarea = new JTextArea();
+		gamechatarea.setFont(new Font("Monospaced", Font.PLAIN, 13));
+		gamechatarea.setRows(12);
+		scrollPane = new JScrollPane(gamechatarea);
+		gamechatP.add(scrollPane, BorderLayout.NORTH);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		gamechattxt = new JTextField();
+		gamechattxt.setFont(new Font("굴림", Font.PLAIN, 15));
+		gamechatP.add(gamechattxt, BorderLayout.SOUTH);
+		gamechattxt.setColumns(50);
+		setResizable(false);
+		setLocationRelativeTo(null);
+		setVisible(true);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		
+	}
+	
+//	public GameView(List<GameUser> users) {
+//		super();
+//		this.userList = users;
+//		for(GameUser user : users) {
+//			user.enterRoom(this);
+//		}
+//		//첫 번째 유저를 방장으로 만듬.
+//		this.roomOwner = userList.get(0);
+//	}
 
 	public void showPopUp(String message) {
 		JOptionPane.showMessageDialog(this, message, "", JOptionPane.INFORMATION_MESSAGE);
@@ -137,6 +255,82 @@ public class GameView extends JFrame implements KeyListener {
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void enterUser(GameUser user) {
+		System.out.println(userList.size()+"리스트사이즈");
+		userList = new ArrayList<>();
+		user.enterRoom(this);
+		userList.add(user);
+		if(userList.size()==0) {
+			this.roomOwner = user;
+		}
+	}
+	
+	public void enterUser(List<GameUser> users) {
+		for(GameUser gameUser : users) {
+			gameUser.enterRoom(this);
+		}
+		userList.addAll(users);
+	}
+	
+	//방에서 나가기
+	public void exitUser(GameUser user) {
+		user.exitRoom(this);
+		//나간 유저를 리스트에서 지움.
+		userList.remove(user);
+		if(userList.size()<2) {
+			this.roomOwner = userList.get(0);
+			return;
+		}
+	}
+	
+	@Override
+	public int hashCode() {
+		return roomnum;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this==obj) return true;
+		if(obj==null||getClass()!=obj.getClass()) return false;
+
+		GameUser gameUser = (GameUser)obj;
+			
+		return user.userid == gameUser.userid;
+	}
+	
+
+	public void setOwner(GameUser owner) {
+		this.roomOwner = owner;
+	}
+	
+	public void close() {
+		for(GameUser user : userList) {
+			user.exitRoom(this);
+		}
+		this.userList.clear();
+		this.userList = null;
+	}
+	
+	public void getowner() {
+		System.out.println("방장 : " + this.ownerid);
+	}
+	
+	public int getroomnum() {
+		return this.roomnum;
+	}
+	
+	public String getRoomId() {
+		return roomid;
+	}
+	
+	public GameView getRoom(int roomnum) {
+		if(this.roomnum == roomnum) {
+			return this;
+		}else {
+			return null;
+		}
 	}
 	
 }

@@ -21,6 +21,7 @@ import com.kitri.sguo.net.constdata.SguoConst;
 
 import java.awt.Font;
 import javax.swing.JLabel;
+import java.awt.Color;
 
 //채팅 화면
 public class LobbyChattingView extends JPanel implements KeyListener {
@@ -83,7 +84,9 @@ public class LobbyChattingView extends JPanel implements KeyListener {
 		userlistp.add(listtitle);
 
 		userlist = new JTextArea();
-		userlist.setFont(new Font("Monospaced", Font.PLAIN, 13));
+		userlist.setBackground(Color.WHITE);
+		userlist.setForeground(Color.BLACK);
+		userlist.setFont(new Font("Monospaced", Font.BOLD, 17));
 		userlist.setBounds(1, 1, 207, 444);
 		userlist.setEnabled(false);
 		userlist.setEditable(false);

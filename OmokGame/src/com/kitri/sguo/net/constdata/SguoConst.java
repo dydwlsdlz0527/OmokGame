@@ -20,6 +20,15 @@ public class SguoConst {
 	//게임 방 번호 프로토콜
 	public static int ROOMNUM = 1;
 
-	//게임 입장하기
-	public static final int GoGame = 5000;
+	//클라이언트가 생성된 게임방에 접속하기 위한 프로토콜
+	public static final int GOGAME = 5000;
+	
+	//클라이언트가 나가면 서버에 전달
+	public static final int EXITLOBBY = 5200;
+	
+	//클라이언트가 접속했을 때 생성된 방 정보 보여주기
+	public static final int RLIST = 3333;
+	
+	
+
 }

@@ -2,12 +2,17 @@ package com.kitri.sguo.controller.lobby;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.kitri.sguo.model.lobby.LobbyCommandImpl;
 import com.kitri.sguo.model.login.MemberDTO;
+import com.kitri.sguo.net.client.ClientSocket;
+import com.kitri.sguo.net.constdata.SguoConst;
 import com.kitri.sguo.view.game.GameView;
 import com.kitri.sguo.view.lobby.MainLobbyView;
 import com.kitri.sguo.view.lobby.MakeRoomF;
@@ -21,12 +26,14 @@ public class LobbyController extends JPanel implements ActionListener{
 	String userid;
 	MainLobbyView mainlobbyview;
 	JPanel gameRooms;
+	Socket socket;
 	
 	public LobbyController(MainLobbyView mainlobbyview, JPanel jp, String userid, JPanel gameRooms) {
 		this.jp = jp;
 		this.userid = userid;
 		this.mainlobbyview = mainlobbyview;
 		this.gameRooms = gameRooms;
+		socket = ClientSocket.getSocket();
 	}
 
 	@Override
@@ -35,6 +42,8 @@ public class LobbyController extends JPanel implements ActionListener{
 		String cmd = e.getActionCommand();
 		//프로그램 종료
 		if(cmd.equals("나가기")) {
+			System.out.println("유저 나감");
+			send(SguoConst.EXITLOBBY+"||"+userid);
 			lci.exit();
 		}else if(cmd.equals("1:1 쪽지")){
 			
@@ -61,4 +70,24 @@ public class LobbyController extends JPanel implements ActionListener{
 		}
 	}
 	
+	void send(String data) {
+		Thread thread = new Thread() {
+			public void run() {
+				try {
+					System.out.println("서버에 보내는 데이터 : " + data);
+					byte[] byteArr = data.getBytes("UTF-8");
+					OutputStream outputStream = socket.getOutputStream();
+					outputStream.write(byteArr);
+					outputStream.flush();
+				} catch (Exception e) {
+					try {
+						socket.close();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		};
+		thread.start();
+	}
 }

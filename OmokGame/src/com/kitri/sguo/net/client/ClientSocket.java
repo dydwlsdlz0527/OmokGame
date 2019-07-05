@@ -17,7 +17,7 @@ public class ClientSocket {
 	private ClientSocket() {}
 
 	public static synchronized Socket getSocket() {
-
+		
 		if (socket == null) {
 			socket = new Socket();
 		}
@@ -31,6 +31,8 @@ public class ClientSocket {
 
 		return socket;
 	}
+	
+	
 	
 
 

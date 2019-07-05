@@ -2,13 +2,11 @@ package com.kitri.sguo.view.lobby;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 
@@ -18,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import com.kitri.sguo.controller.lobby.LobbyController;
+import com.kitri.sguo.model.game.GameUser;
 import com.kitri.sguo.model.login.MemberDAO;
 import com.kitri.sguo.net.client.ClientSocket;
 import com.kitri.sguo.net.constdata.SguoConst;
@@ -97,6 +96,8 @@ public class MainLobbyView extends JFrame {
 			e.printStackTrace();
 		}
 		listuser();
+		//처음 한번만 뿌려준다.
+		//send(SguoConst.RLIST+"||");
 	}
 
 	public void MakeLobbyController() {
@@ -126,7 +127,7 @@ public class MainLobbyView extends JFrame {
 					if (!socket.isClosed()) {
 						stopClient();
 					}
-					e.printStackTrace();
+					// e.printStackTrace();
 				}
 				receive();
 			}
@@ -144,6 +145,8 @@ public class MainLobbyView extends JFrame {
 		};
 		thread.start();
 	}
+	
+
 
 	void stopClient() {
 		if (socket != null && !socket.isClosed()) {
@@ -204,35 +207,50 @@ public class MainLobbyView extends JFrame {
 					}
 					break;
 				}
-				// 방 번호 || 아이디 || 방제 || 아이디 || 방장등급 || 제한등급
+				// 패널에 보이기
+				// 방 번호 || 방제 || 아이디 || 방장등급 || 제한등급
 				case SguoConst.MRPROT: {
 					String roomnum = st.nextToken();
 					String roomtitle = st.nextToken();
 					String userid = st.nextToken();
 					String userrkname = st.nextToken();
 					String userrklimit = st.nextToken();
-					gameRooms.add(new RoomsP(Integer.parseInt(roomnum),roomtitle,userid,userrkname,userrklimit));
+					gameRooms.add(new RoomsP(Integer.parseInt(roomnum), roomtitle, userid, userrkname, userrklimit));
 					break;
 				}
-				case SguoConst.GoGame:{
-					//어떤 방인지 찾아야함.
-					String roomnum = st.nextToken();
+				case SguoConst.GOGAME: {
+					// 어떤 방인지 찾아야함.
+					int roomnum = Integer.parseInt(st.nextToken());
 					String userimg = st.nextToken();
 					String userid = st.nextToken();
 					String shift = st.nextToken();
-					for(int i=0;i<SguoConst.ROOMNUM;i++) {
-						if(String.valueOf(i).equals(roomnum)) {
-							new GameView(userimg, userid, shift);
-						}
+					GameUser user = new GameUser(roomnum, userimg, userid, shift);
+					break;
+				}
+				case SguoConst.EXITLOBBY: {
+					chattingview.userlist.setText("");
+					while (st.hasMoreTokens()) {
+						chattingview.userlist.append(st.nextToken() + "\n");
 					}
+					break;
 				}
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 				stopClient();
 				break;
 			}
 		}
+	}
+	
+	void gamerun(int roomnum) {
+		MemberDAO mdao = new MemberDAO();
+		List<Object> player = mdao.getUserInfo(memberid);
+		double total = (int)player.get(1)+(int)player.get(2)+(int)player.get(3);
+		GameUser user = new GameUser(roomnum, String.valueOf(player.get(4)), String.valueOf(player.get(0)), String.valueOf(total));
+		GameView room = new GameView();
+		room.getRoom(roomnum).enterUser(user);;
+		room.setVisible(true);
 	}
 
 }
