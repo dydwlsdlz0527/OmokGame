@@ -18,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.kitri.sguo.model.game.GameUser;
-import com.kitri.sguo.model.game.RoomManager;
 import com.kitri.sguo.net.client.ClientSocket;
 import com.kitri.sguo.net.constdata.SguoConst;
 import com.kitri.sguo.view.game.GameView;

@@ -3,6 +3,7 @@ package com.kitri.sguo.view.game;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -19,8 +20,6 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import com.kitri.sguo.model.game.GameUser;
-
-import java.awt.Font;
 
 //오목 두는 화면
 public class GameView extends JFrame implements KeyListener {

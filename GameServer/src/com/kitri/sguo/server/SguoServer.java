@@ -13,6 +13,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
@@ -33,16 +34,16 @@ public class SguoServer {
 	// 서버에 접속한 클라이언트
 	List<ClientSample> connections = new Vector<>();
 	// 개설된 게임방
-	List<Object> roomlist;
+	List<GameRoom> roomlist;
 	// 게임 속 유저 리스트
-	List<Object> userList;
+	List<GameUser> userList;
 	// 접속한 유저 리스트
 	List<String> ulist = new Vector<>();
 	Socket socket;
 	DataOutputStream dos = null;
 	DataInputStream dis = null;
-	// 게임 방 번호 프로토콜
-	int roomcnt = 0;
+	//서버가 실행될 때 게임방 매니저 생성.
+	RoomManager roommanager;
 
 
 	public SguoServer() {
@@ -66,6 +67,7 @@ public class SguoServer {
 		try {
 			serverSocket = new ServerSocket();
 			serverSocket.bind(new InetSocketAddress("localhost", SguoConst.SPORT)); // ip와 패스워드를 바인딩한다.
+			roommanager = new RoomManager();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -177,19 +179,13 @@ public class SguoServer {
 							int protocol = Integer.parseInt(st.nextToken());
 							System.out.println("서버 쪽 포로토콜 : " + protocol);
 							switch (protocol) {
-							// 방 만들기 포트 || 방 번호 ||방제 || 아이디 || 방장 등급 || 제한 등급
+							// 방 만들기 포트 || 방제 || 아이디 || 방장 등급 || 제한 등급
 							case SguoConst.MRPROT: {
-								System.out.println("ASDFASDF");
-								//방을 만들 때마다 방 번호 하나씩 증가.
-								int roomnum = roomcnt++;
-								roomlist.add(roomnum);
 								String roomtitle = st.nextToken();
-								String userid = st.nextToken();
-								String userrkname = st.nextToken();
-								String userrklimit = st.nextToken();
-								System.out.println(roomnum + "||" +roomtitle+ "||" +userid+ "||" +userrkname+ "||" +userrklimit);
-								message = SguoConst.MRPROT + "||" + roomnum + "||" + roomtitle + "||" + userid + "||"
-										+ userrkname + "||" + userrklimit;
+								String ownerid = st.nextToken();
+								String userrankname = st.nextToken();
+								String limitrank = st.nextToken();
+								message = SguoConst.MRPROT + "||" + roomtitle + "||" + ownerid + "||" + userrankname + "||" + limitrank; 
 								break;
 							}
 							// 보낸 사람 아이디 || 메세지
@@ -215,13 +211,16 @@ public class SguoServer {
 								message = msg2 + userid;
 								break;
 							}
-							// 방 번호 || 이미지 || 아이디 || 승률
+							// 이미지 || 아이디 || 승률
 							case SguoConst.GOGAME: {
-								String roomnum = st.nextToken();
 								String uimage = st.nextToken();
 								String userid = st.nextToken();
 								String shift = st.nextToken();
-								message = SguoConst.GOGAME + "||" + roomnum + "||" + uimage + "||" + userid + "||"
+								GameUser user = new GameUser(userid);
+								userList.add(user);
+								
+								
+								message = SguoConst.GOGAME + "||" + uimage + "||" + userid + "||"
 										+ shift;
 								break;
 							}

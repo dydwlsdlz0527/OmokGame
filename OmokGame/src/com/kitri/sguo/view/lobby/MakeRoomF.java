@@ -123,20 +123,26 @@ public class MakeRoomF extends JFrame{
 				}
 				MemberDAO mdao = new MemberDAO();
 				userrankname = mdao.getUserRoomInfo(userid);
-				System.out.println(userid+" "+textField.getText()+" "+userrankname+" "+limitrank);
 				if(textField.getText().trim()==null||limitrank.isEmpty()) {
 					JOptionPane.showMessageDialog(null,"작성 내용을 다시 확인하세요.");
 				}else {
-					//방 제목, 방장 등급, 제한 등급
-					MakeGameRoom();
-					mainlobbyview.png.getVerticalScrollBar().setValue(mainlobbyview.png.getVerticalScrollBar().getMinimum()+10);
-					mainlobbyview.gameRooms.repaint();
-					//방 번호 || 유저 이미지 || 유저 아이디 || 승률
-					//방 번호는 RoomManager가 만들어 줌.
+					socket = ClientSocket.getSocket();
+					//게임방 패널 보이게 만들기.
+					//방만들기포트 || 방제 || 아이디 || 방장 등급 || 제한 등급
+					String data1 = SguoConst.MRPROT+"||"+textField.getText()+"||"+ userid+"||"+userrankname+"||"+limitrank;
+					System.out.println("게임방 만들 때 서버에 보내는 데이터 : " + data1);
+					send(data1);
+					
+					//진짜 게임방을 만들고 안에서 방장의 정보 출력.
+					//방장의 이미지 || 아이디 || 승률
 					ownerinfo = mdao.getUserInfo(userid);
 					double total = (int)ownerinfo.get(1)+(int)ownerinfo.get(2)+(int)ownerinfo.get(3);
-					owner = new GameUser(0, String.valueOf(ownerinfo.get(4)), String.valueOf(ownerinfo.get(0)), String.valueOf(total));
-					RoomManager.createRoom(owner);
+					double shift = (int)ownerinfo.get(1)/total * 100;
+					String data2 = SguoConst.GOGAME+"||"+ownerinfo.get(4)+"||"+ownerinfo.get(0)+"||"+shift;
+					send(data2);
+					
+					mainlobbyview.png.getVerticalScrollBar().setValue(mainlobbyview.png.getVerticalScrollBar().getMinimum()+10);
+					mainlobbyview.gameRooms.repaint();
 					dispose();
 				}
 			}
@@ -148,14 +154,6 @@ public class MakeRoomF extends JFrame{
 				dispose();
 			}
 		});
-	}
-	//패널에 게임방 보이게 하기.
-	//방만들기포트 || 방제 || 아이디 || 방장 등급 || 제한 등급
-	void MakeGameRoom() {
-		socket = ClientSocket.getSocket();
-		//실제적으로 게임방 보이게 만들기.
-		String data = SguoConst.MRPROT+"||"+textField.getText()+"||"+ userid+"||"+userrankname+"||"+limitrank;
-		send(data);
 	}
 	
 	void send(String data) {
