@@ -181,7 +181,7 @@ public class MainLobbyView extends JFrame {
 		System.out.println("리시브");
 		while (true) {
 			try {
-				byte[] byteArr = new byte[100];
+				byte[] byteArr = new byte[1000];
 				InputStream inputStream = socket.getInputStream();
 				int readByteCount = inputStream.read(byteArr);
 				if (readByteCount == -1) {
@@ -210,21 +210,23 @@ public class MainLobbyView extends JFrame {
 				// 패널에 보이기
 				// 방 번호 || 방제 || 아이디 || 방장등급 || 제한등급
 				case SguoConst.MRPROT: {
-					String roomnum = st.nextToken();
 					String roomtitle = st.nextToken();
 					String userid = st.nextToken();
 					String userrkname = st.nextToken();
 					String userrklimit = st.nextToken();
-					gameRooms.add(new RoomsP(Integer.parseInt(roomnum), roomtitle, userid, userrkname, userrklimit));
+					gameRooms.add(new RoomsP(roomtitle, userid, userrkname, userrklimit));
 					break;
 				}
 				case SguoConst.GOGAME: {
 					// 어떤 방인지 찾아야함.
 					int roomnum = Integer.parseInt(st.nextToken());
+					System.out.println(roomnum);
 					String userimg = st.nextToken();
+					System.out.println(userimg);
 					String userid = st.nextToken();
+					System.out.println(userid+"@@");
 					String shift = st.nextToken();
-					GameUser user = new GameUser(roomnum, userimg, userid, shift);
+					MakeGameRoom(roomnum,userimg,userid,shift);
 					break;
 				}
 				case SguoConst.EXITLOBBY: {
@@ -243,14 +245,16 @@ public class MainLobbyView extends JFrame {
 		}
 	}
 	
-	void gamerun(int roomnum) {
-		MemberDAO mdao = new MemberDAO();
-		List<Object> player = mdao.getUserInfo(memberid);
-		double total = (int)player.get(1)+(int)player.get(2)+(int)player.get(3);
-		GameUser user = new GameUser(roomnum, String.valueOf(player.get(4)), String.valueOf(player.get(0)), String.valueOf(total));
-		GameView room = new GameView();
-		room.getRoom(roomnum).enterUser(user);;
-		room.setVisible(true);
+	void MakeGameRoom(int roomnum, String userimg, String userid, String shift) {
+		Thread thread = new Thread() {
+			@Override
+			public void run() {
+				GameUser user = new GameUser(roomnum, userimg, userid, shift);
+				//new GameView(user);
+				new GameView(user);
+			}
+		};
+		thread.start();
 	}
 
 }

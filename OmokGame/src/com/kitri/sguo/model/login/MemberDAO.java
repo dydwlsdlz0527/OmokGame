@@ -31,7 +31,7 @@ public class MemberDAO {
 	Connection conn;
 
 	public void Connect() {
-		DB_URL = "jdbc:oracle:thin:@localhost:1521:xe";
+		DB_URL = "jdbc:oracle:thin:@localhost:1521:orcl";
 		DB_USER = "c##sguo";
 		DB_PASSWORD = "1234";
 		conn = null;
@@ -197,8 +197,6 @@ public class MemberDAO {
 				+ "FROM OMOK_USER O, USER_RECODE R\r\n" + "WHERE O.USER_ID = R.USER_ID AND O.USER_ID = ?";
 		InputStream in = null;
 		BufferedImage bi = null;
-		int len = 0;
-		byte[] buf = new byte[1024];
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, memberid);

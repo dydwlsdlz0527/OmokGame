@@ -31,7 +31,6 @@ public class RoomsP extends JPanel{
 	JLabel roomrank;
 	JLabel roomtitle;
 	Socket socket;
-	int roomnum;
 	GameUser user;
 	GameView room;
 	List<Object> playerinfo;
@@ -47,8 +46,7 @@ public class RoomsP extends JPanel{
 		add(roomintro);
 	}
 
-	public RoomsP(int roomnum, String RoomTitle, String userid,  String userrankname, String limitrank) {
-		this.roomnum = roomnum;
+	public RoomsP(String RoomTitle, String userid,  String userrankname, String limitrank) {
 		this.userid = userid;
 		setLayout(new GridLayout(4, 1));
 		roomtitle = new JLabel("       \uBC29 \uC81C\uBAA9 : " + RoomTitle);
@@ -60,7 +58,6 @@ public class RoomsP extends JPanel{
 		roombtn = new JButton("\uC785\uC7A5\uD558\uAE30");
 		add(roombtn);
 		setSize(315,139);
-		System.out.println("ROOMSP에 방 번호 :" + roomnum);
 	
 		roombtn.addActionListener(new ActionListener() {
 			@Override
@@ -68,15 +65,6 @@ public class RoomsP extends JPanel{
 				int result = JOptionPane.showConfirmDialog(null, "입장하시겠습니까?","Confirm",JOptionPane.YES_NO_OPTION);
 				if(result==JOptionPane.YES_OPTION) {
 					
-//					MemberDAO mdao = new MemberDAO();
-//					playerinfo = mdao.getUserInfo(userid);
-//					double total = (int)playerinfo.get(1)+(int)playerinfo.get(2)+(int)playerinfo.get(3);
-//					user = new GameUser(String.valueOf(roomnum), String.valueOf(playerinfo.get(4)), String.valueOf(playerinfo.get(0)), String.valueOf(total));
-//					room = room.getRoom(String.valueOf(roomnum));
-//					room.enterUser(user);
-//					
-//					room.getowner();
-					searchRoom();
 				}
 			}
 		});
@@ -104,13 +92,6 @@ public class RoomsP extends JPanel{
 		thread.start();
 	}
 	
-	void searchRoom() {
-		int goroomnum = roomnum;
-		System.out.println("선택한 방 번호 : " + goroomnum);
-		//System.out.println(room.getroomnum()+" : 선택한 방 번호 2" + room.getRoomId());
-		//room.setVisible(true);
-		send(SguoConst.GOGAME+"||"+goroomnum);
-	}
 	
 	
 }

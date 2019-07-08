@@ -44,6 +44,8 @@ public class SguoServer {
 	DataInputStream dis = null;
 	//서버가 실행될 때 게임방 매니저 생성.
 	RoomManager roommanager;
+	//유저
+	GameUser user;
 
 
 	public SguoServer() {
@@ -68,6 +70,7 @@ public class SguoServer {
 			serverSocket = new ServerSocket();
 			serverSocket.bind(new InetSocketAddress("localhost", SguoConst.SPORT)); // ip와 패스워드를 바인딩한다.
 			roommanager = new RoomManager();
+			userList = new Vector<>();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -159,14 +162,15 @@ public class SguoServer {
 		}
 
 		// 클라이언트가 서버에 보낸 메세지 받기.
-		void receive() {
+		synchronized void receive() {
+			System.out.println("서버쪽리시브");
 			Runnable runnable = new Runnable() {
 				@Override
 				public void run() {
 					while (true) {
 						try {
 							InputStream inputStream = socket.getInputStream();
-							byte[] Arr = new byte[100];
+							byte[] Arr = new byte[1000];
 							// 데이터 받기, 클라이언트가 비정상적으로 종료했을 경우 IOException 발생
 							int readByteCount = inputStream.read(Arr);
 							if (readByteCount == -1) {
@@ -211,16 +215,16 @@ public class SguoServer {
 								message = msg2 + userid;
 								break;
 							}
-							// 이미지 || 아이디 || 승률
+							// 방 번호 || 이미지 || 아이디 || 승률
 							case SguoConst.GOGAME: {
 								String uimage = st.nextToken();
 								String userid = st.nextToken();
 								String shift = st.nextToken();
-								GameUser user = new GameUser(userid);
+								user = new GameUser(uimage,userid,shift);
 								userList.add(user);
-								
-								
-								message = SguoConst.GOGAME + "||" + uimage + "||" + userid + "||"
+								System.out.println("리스트 크기 = " + userList.size());
+								GameRoom room = RoomManager.createRoom(user);
+								message = SguoConst.GOGAME + "||" + room.getId() +"||"+ uimage + "||" + userid + "||"
 										+ shift;
 								break;
 							}

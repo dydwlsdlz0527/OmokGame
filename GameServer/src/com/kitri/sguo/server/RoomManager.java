@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class RoomManager {
 	
-	private static List<GameRoom> roomList;
-	private static AtomicInteger atomicInteger;
+	public static List<GameRoom> roomList;
+	public static AtomicInteger atomicInteger;
 	
 	static {
 		roomList = new ArrayList<>();

@@ -95,7 +95,9 @@ public class UserInfoP extends JPanel{
 		bi = (BufferedImage) ulist.get(4);
 		JPanel imagepanel = new LobbyUserImageP(bi);
 		imagepanel.setBounds(12, 10, 164, 257);
+		imagepanel.setVisible(true);
 		add(imagepanel);
+		
 		
 		userModified = new JButton("\uC218\uC815");
 		userModified.setFont(new Font("±¼¸²", Font.BOLD, 12));

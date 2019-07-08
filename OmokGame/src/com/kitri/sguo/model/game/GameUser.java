@@ -9,7 +9,7 @@ import com.kitri.sguo.view.game.GameView;
 public class GameUser {
 
 	public int roomnum;
-	public byte[] userimg;
+	public String userimg;
 	public String userid;
 	public String shift;
 	//유저가 속한 게임
@@ -24,7 +24,7 @@ public class GameUser {
 	//게임하는 유저의 이미지 || 아이디 || 승률
 	public GameUser(int roomnum, String userimg, String userid, String shift) {
 		this.roomnum = roomnum;
-		this.userimg = userimg.getBytes();
+		this.userimg = userimg;
 		this.userid = userid;
 		this.shift = shift;
 		socket = ClientSocket.getSocket();
@@ -51,5 +51,9 @@ public class GameUser {
 		GameUser gameUser = (GameUser)obj;
 			
 		return userid ==gameUser.userid;
+	}
+	@Override
+	public int hashCode() {
+		return roomnum;
 	}
 }

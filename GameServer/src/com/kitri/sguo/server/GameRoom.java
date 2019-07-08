@@ -24,7 +24,6 @@ public class GameRoom {
 	}
 	//유저가 방에 들어오면 해당 게임방 리스트에 추가.
 	public void enterUser(GameUser user) {
-		user.enterRoom(this);
 		userList.add(user);
 	}
 	

@@ -4,11 +4,10 @@ import java.net.Socket;
 
 public class GameUser {
 	
-	private byte[] userimg;
-	private String userid;
-	private double shift; 
-	private Socket socket;
-	private GameRoom room;
+	String userimg;
+	String userid;
+	String shift; 
+	GameRoom room;
 	
 	public GameUser() {}
 	
@@ -16,7 +15,7 @@ public class GameUser {
 		this.userid = userid;
 	}
 	
-	public GameUser(byte[] userimg, String userid, double shift) {
+	public GameUser(String userimg, String userid, String shift) {
 		this.userimg = userimg;
 		this.userid = userid;
 		this.shift = shift;
@@ -31,11 +30,11 @@ public class GameUser {
 		this.room = null;
 	}
 
-	public byte[] getUserimg() {
+	public String getUserimg() {
 		return userimg;
 	}
 
-	public void setUserimg(byte[] userimg) {
+	public void setUserimg(String userimg) {
 		this.userimg = userimg;
 	}
 
@@ -47,19 +46,11 @@ public class GameUser {
 		this.userid = userid;
 	}
 
-	public double getShift() {
+	public String getShift() {
 		return shift;
 	}
 
-	public Socket getSocket() {
-		return socket;
-	}
-
-	public void setSocket(Socket socket) {
-		this.socket = socket;
-	}
-
-	public void setShift(double shift) {
+	public void setShift(String shift) {
 		this.shift = shift;
 	}
 
